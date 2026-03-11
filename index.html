@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="https://i127.fastpic.org/big/2026/0303/e8/6678c85cbfa674a4976b8e75bdb8b8e8.png" type="image/png">
+<title>Deadzone: Rogue — Кодекс</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;600&display=swap');
+  
+  :root {
+    --bg: #0d0f14;
+    --card: #13161e;
+    --border: #1e2435;
+    --accent: #00bfff;
+    --accent2: #7f5af0;
+    --text: #c8d0e0;
+    --head: #e8ecf5;
+    --muted: #6b7894;
+    --fire: #ff6b35;
+    --cryo: #4fc3f7;
+    --lightning: #ffe066;
+    --void: #b39ddb;
+    --plasma: #9400D3;
+    --psionic: #00FA9A;
+	--radio: #FFAF36;
+	--epic: #FF00FF;
+	--items: #00FF7F;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  #printBtn {
+    position: fixed; top: 16px; right: 16px; z-index: 999;
+    background: var(--accent); color: #000; border: none;
+    padding: 10px 20px; border-radius: 6px; font-weight: 700;
+    cursor: pointer; font-size: 14px; letter-spacing: .5px;
+  }
+  #printBtn:hover { background: #009ad6; }
+
+  @media print {
+    #printBtn { display: none; }
+    body { background: #fff; color: #111; font-size: 13px; }
+    .card { border: 1px solid #ccc; background: #f9f9f9; }
+    h1,h2,h3 { color: #000; }
+    .tag { border: 1px solid #999; color: #333; }
+    table { page-break-inside: avoid; }
+    section { page-break-inside: avoid; }
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  .guide-header {
+    background: linear-gradient(135deg, #0a0c12 0%, #111827 60%, #0d1a2e 100%);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .guide-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 80% 50%, rgba(0,191,255,.07) 0%, transparent 70%);
+  }
+  .guide-header h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.4rem; font-weight: 700;
+    color: var(--accent); letter-spacing: 2px;
+    text-shadow: 0 0 30px rgba(0,191,255,.4);
+  }
+  .guide-header .sub { color: var(--muted); margin-top: 6px; font-size: 13px; }
+  .tags { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag {
+    background: rgba(0,191,255,.12); border: 1px solid rgba(0,191,255,.3);
+    color: var(--accent); border-radius: 4px; padding: 2px 10px; font-size: 13px; font-weight: 600;
+  }
+  .note-box {
+    margin-top: 16px;
+    background: rgba(127,90,240,.1); border-left: 3px solid var(--accent2);
+    padding: 10px 14px; border-radius: 4px; font-size: 12px; color: var(--text);
+  }
+  .note-box a { color: var(--accent); }
+
+  .toc {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 24px; margin-bottom: 28px;
+    position: sticky; top: 16px; z-index: 100;
+  }
+  .toc h2 { font-family: 'Rajdhani', sans-serif; color: var(--accent); font-size: 1.1rem; margin-bottom: 12px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; }
+  .toc-grid a {
+    color: var(--text); text-decoration: none; padding: 4px 8px;
+    border-radius: 4px; transition: background .15s; font-size: 13px;
+  }
+  .toc-grid a:hover { background: rgba(0,191,255,.1); color: var(--accent); }
+  .toc-grid a::before { content: '› '; color: var(--accent); }
+
+  section { margin-bottom: 32px; scroll-margin-top: 16px; }
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--head);
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .icon { font-size: 1.2rem; }
+
+  .subsection-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem; color: var(--accent2);
+    margin: 18px 0 10px;
+    border-left: 3px solid var(--accent2); padding-left: 10px;
+  }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px;
+  }
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;
+  }
+  .item-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  .item-card h4 { color: var(--accent); font-size: 13px; margin-bottom: 4px; }
+  .item-card .rarity { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+  .rarity-rare { color: #4fc3f7; }
+  .rarity-epic { color: #b39ddb; }
+
+  .element-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .el-card { border-radius: 8px; padding: 14px; border: 1px solid; }
+  .el-card.fire { background: rgba(255,107,53,.07); border-color: rgba(255,107,53,.3); }
+  .el-card.cryo { background: rgba(79,195,247,.07); border-color: rgba(79,195,247,.3); }
+  .el-card.lightning { background: rgba(255,224,102,.07); border-color: rgba(255,224,102,.3); }
+  .el-card.void { background: rgba(179,157,219,.07); border-color: rgba(179,157,219,.3); }
+  .el-card.plasma { background: rgba(128,203,196,.07); border-color: rgba(128,203,196,.3); }
+  .el-card.psionic { background: rgba(244,143,177,.07); border-color: rgba(244,143,177,.3); }
+  .el-card.radio { background: rgba(255,175,54,.07); border-color: rgba(255,175,54,.3); }
+  
+  .el-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .el-name img { width: 32px; height: auto; object-fit: contain; }
+  .el-card.fire .el-name { color: var(--fire); }
+  .el-card.cryo .el-name { color: var(--cryo); }
+  .el-card.lightning .el-name { color: var(--lightning); }
+  .el-card.void .el-name { color: var(--void); }
+  .el-card.plasma .el-name { color: var(--plasma); }
+  .el-card.psionic .el-name { color: var(--psionic); }
+  .el-card.radio .el-name { color: var(--radio); }
+
+  .el-debuff { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+  .el-proc { font-size: 11px; color: var(--muted); padding-left: 12px; border-left: 2px solid; margin: 16px 0 0px; }
+  .el-card.fire .el-proc { border-color: var(--fire); }
+  .el-card.cryo .el-proc { border-color: var(--cryo); }
+  .el-card.lightning .el-proc { border-color: var(--lightning); }
+  .el-card.void .el-proc { border-color: var(--void); }
+  .el-card.plasma .el-proc { border-color: var(--plasma); }
+  .el-card.psionic .el-proc { border-color: var(--psionic); }
+  .el-card.radio .el-proc { border-color: var(--radio); }
+  .el-proc strong { color: var(--text); }
+
+  .perk-el-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .perk-el-header img { width: 22px; height: 22px; object-fit: contain; }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    background: rgba(0,191,255,.1); color: var(--accent);
+    font-family: 'Rajdhani', sans-serif; font-weight: 600;
+    padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td { padding: 7px 10px; border-bottom: 1px solid rgba(30,36,53,.8); color: var(--text); }
+  tr:hover td { background: rgba(255,255,255,.02); }
+  tr:last-child td { border-bottom: none; }
+  .num { text-align: left; font-family: monospace; }
+
+  .wi { width: auto; height: 16px; vertical-align: middle; margin-right: 3px; }
+  .wi1 { width: auto; height: 32px; margin: 0px 3px 0px 0; display: block; float: left; }
+  .wi2 { width: 48px; height: 48px; vertical-align: middle; margin-right: 3px; }
+  .wi22 { width: 70px; height: 70px; vertical-align: middle; margin: 5px; }
+  .psi { width: 25px; height: auto; vertical-align: middle; margin-right: 3px; }
+  .wi3 { width: 450px; height: auto; vertical-align: middle; margin-right: 3px; }
+  .wi4 { width: 313px; height: auto; vertical-align: middle; margin-right: 1px; padding-top: 4px;}
+
+  .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 10px; }
+  .gloss-item { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; }
+  .gloss-item dt { color: var(--accent); font-weight: 600; font-size: 13px; }
+  .gloss-item dd { color: var(--text); font-size: 13px; margin-top: 2px; }
+
+  .dps-high { color: #69db7c; font-weight: 600; }
+  .dps-low { color: var(--muted); }
+
+  ul { padding-left: 18px; }
+  li { margin-bottom: 3px; }
+  strong { color: var(--head); }
+  em { color: var(--muted); font-style: normal; font-size: 14px; }
+
+  .synergy-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px; margin-bottom: 10px;
+  }
+  .synergy-card h4 { color: var(--accent); margin-bottom: 6px; font-size: 13px; }
+  .synergy-card .effect { font-size: 13px; color: var(--text); margin: 6px 0; }
+  .synergy-card .req { font-size: 13px; color: var(--muted); }
+  .synergy-req-block { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 8px; }
+  .req-block { background: rgba(0,0,0,.2); border-radius: 4px; padding: 6px 8px; margin: 0 -7px;}
+  .req-block .req-title { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  .req-block ul { font-size: 12px; color: var(--muted); list-style: none; padding: 0; }
+
+  .syn-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px,1fr)); gap: 12px; }
+  .syn-grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(460px,1fr)); gap: 25px; }
+
+  .difficulty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 10px; margin-bottom: 16px; }
+  .diff-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .diff-card .diff-name { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+  .diff-adventure .diff-name { color: #69db7c; }
+  .diff-normal .diff-name { color: var(--accent); }
+  .diff-hard .diff-name { color: #e8ecf5; }
+  .diff-expert .diff-name { color: #ffa94d; }
+  .diff-nightmare .diff-name { color: #ff6b6b; }
+  .diff-card p { font-size: 13px; color: var(--muted); }
+  .diff-card .diff-bonus { font-size: 13px; color: var(--text); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+
+<div class="container">
+
+  <!-- ШАПКА -->
+  <div class="guide-header">
+    <h1>⬡ DEADZONE: ROGUE — КОДЕКС</h1>
+    <p class="sub">v1.0.0.1 · Автор: Stinger (за основу взята информация от Автора Smyrill) · Полный справочник по игре</p>
+	<h2 id="difficulty1"></h2>
+  </div>
+
+  <!-- ОГЛАВЛЕНИЕ -->
+  <div class="toc">
+    <h2>📋 Содержание</h2>
+    <div class="toc-grid">
+      <a href="#difficulty1">Сложность</a>
+      <a href="#difficulty1">Глоссарий</a>
+      <a href="#elements1">Стихии</a>
+      <a href="#augments1">Аугменты</a>
+      <a href="#perks-elemental1">Перки: Стихийные</a>
+      <a href="#perks-offensive1">Перки: Атакующие</a>
+      <a href="#perks-defensive1">Перки: Защитные</a>
+      <a href="#weapons1">Оружие</a>
+      <a href="#dps1">DPS оружия</a>
+      <a href="#elemental-affixes1">Стихийные аффиксы</a>
+      <a href="#generic-affixes1">Общие аффиксы</a>
+      <a href="#proc-affixes1">Аффиксы проков</a>
+      <a href="#armor1">Броня</a>
+      <a href="#items-al1">Предметы А–Л</a>
+      <a href="#items-mz1">Предметы М–Я</a>
+      <a href="#tech1">Технологические мастерства</a>
+      <a href="#superior-al1">Улучш. предметы А–Л</a>
+      <a href="#superior-mz1">Улучш. предметы М–Я</a>
+      <a href="#syn-augments1">Синергии: Аугменты</a>
+      <a href="#syn-perks1">Синергии: Перки</a>
+      <a href="#syn-items1">Синергии: Предметы</a>
+      <a href="#charm1">Благословление</a>
+    </div>
+  </div>
+
+  <!-- СЛОЖНОСТЬ -->
+  <section id="difficulty">
+    <div class="section-title"><span class="icon">⚙️</span> Уровни сложности</div>
+    <div class="difficulty-grid">
+      <div class="diff-card diff-adventure">
+        <div class="diff-name">Adventure</div>
+        <p>Расслабленный режим. Враги: –25% HP, –50% урон, –20% скорость.</p>
+      </div>
+      <div class="diff-card diff-normal">
+        <div class="diff-name">Normal</div>
+        <p>Стандартный опыт.</p>
+        <div class="diff-bonus">+10% <img src="https://wiki.tribesdepot.com/images/9/9b/T_IconCurrency_Tech.png" class="wi" alt="Tech"> Tech &nbsp; +10% <img src="https://wiki.tribesdepot.com/images/7/71/T_SuperPerkComponent_Generic.png" class="wi" alt="Компоненты"> Компонентов</div>
+      </div>
+      <div class="diff-card diff-hard">
+        <div class="diff-name">Hard</div>
+        <p>Враги: +25% HP, +100% урон, +10% скорость.</p>
+        <div class="diff-bonus">+35% <img src="https://wiki.tribesdepot.com/images/9/9b/T_IconCurrency_Tech.png" class="wi" alt="Tech"> &nbsp; +50% <img src="https://wiki.tribesdepot.com/images/7/71/T_SuperPerkComponent_Generic.png" class="wi" alt="Компоненты"></div>
+      </div>
+      <div class="diff-card diff-expert">
+        <div class="diff-name">Expert</div>
+        <p>Враги: +40% HP, +300% урон, +20% скорость, быстрее реагируют. Больше волн.</p>
+        <div class="diff-bonus">+50% <img src="https://wiki.tribesdepot.com/images/9/9b/T_IconCurrency_Tech.png" class="wi" alt="Tech"> &nbsp; +100% <img src="https://wiki.tribesdepot.com/images/7/71/T_SuperPerkComponent_Generic.png" class="wi" alt="Компоненты"></div>
+      </div>
+      <div class="diff-card diff-nightmare">
+        <div class="diff-name">Nightmare</div>
+        <p>Враги: +40% HP, +400% урон, +30% скорость, значительно быстрее реагируют.</p>
+        <div class="diff-bonus">+100% <img src="https://wiki.tribesdepot.com/images/9/9b/T_IconCurrency_Tech.png" class="wi" alt="Tech"> &nbsp; +150% <img src="https://wiki.tribesdepot.com/images/7/71/T_SuperPerkComponent_Generic.png" class="wi" alt="Компоненты"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ГЛОССАРИЙ -->
+  <section id="glossary">
+    <div class="section-title"><span class="icon">📖</span> Глоссарий</div>
+    <div class="subsection-title">Общие термины</div>
+    <div class="glossary-grid">
+      <dl class="gloss-item"><dt>Рейтинг брони (Armor Rating)</dt><dd>Часть входящего урона поглощается бронёй. Чем выше рейтинг — тем меньше урон.</dd></dl>
+      <dl class="gloss-item"><dt>Улучшение щита (Shield Improvement)</dt><dd>Увеличивает скорость восстановления щита и уменьшает задержку перед зарядкой.</dd></dl>
+      <dl class="gloss-item"><dt>Шанс крит. удара (Crit Chance)</dt><dd>Вероятность того, что удар станет критическим. <em>База ?, бонус суммируется.</em></dd></dl>
+      <dl class="gloss-item"><dt>Урон крит. удара (Crit Damage)</dt><dd>Дополнительный урон от критических ударов. <em>База 35%, бонус суммируется.</em></dd></dl>
+      <dl class="gloss-item"><dt>Стихия (Element)</dt><dd>Стихийный аффикс оружия, определяющий тип урона и прок-эффект.</dd></dl>
+      <dl class="gloss-item"><dt>Стихийный урон (Elemental Damage)</dt><dd>Урон от стихийных проков, дебаффов и оружия с соответствующим аффиксом. <em>Бонус суммируется.</em></dd></dl>
+      <dl class="gloss-item"><dt>Помеченные враги (Marked)</dt><dd>Помеченные враги получают на 50% больше урона в течение 5 секунд.<h2 id="elements1"></dd></dl>
+      <dl class="gloss-item"><dt>Шанс прока (Proc Chance)</dt><dd>Вероятность срабатывания прок-эффекта при попадании. <em>Бонус перемножается.</em></dd></dl>
+      <dl class="gloss-item"><dt>Урон по слабому месту (Weakpoint)</dt><dd>Попадание в Уязвимость (подсвечено) наносит доп. урон. <em>База +35%, бонус суммируется.</em></dd></dl>
+      <dl class="gloss-item"><dt>Дифракция (Diffraction)</dt><dd>Атаки против цели получают +20% к шансу прока на 6 секунд.	</h2></dd></dl>
+      <dl class="gloss-item"><dt>Рефракция (Refraction)</dt><dd>Цель получает на 20% больше урона от проков на 6 секунд.</dd></dl>
+      <dl class="gloss-item"><dt>Призматическое возрождение (Prismatic Rebirth)</dt><dd>Наносит 500 стихийного урона врагам в радиусе 15 метров от цели.</dd></dl>
+      <dl class="gloss-item"><dt><img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap"> Металлолом (Scrap)</dt><dd>Валюта для покупки и улучшения предметов на Фабрикаторе.</dd></dl>
+      <dl class="gloss-item"><dt><img src="https://wiki.tribesdepot.com/images/9/9b/T_IconCurrency_Tech.png" class="wi" alt="Tech"> Технологии (Tech)</dt><dd>Постоянная валюта для разблокировки Технологических мастерств.</dd></dl>
+      <dl class="gloss-item"><dt><img src="https://wiki.tribesdepot.com/images/7/71/T_SuperPerkComponent_Generic.png" class="wi" alt="Компоненты"> Тех. компоненты</dt><dd>Используются вместе с Tech для улучшения мастерств.</dd></dl>
+      <dl class="gloss-item"><dt><img src="https://wiki.tribesdepot.com/images/e/e2/T_TechComponent_Generic.png" class="wi" alt="Компоненты предметов"> Компоненты предметов</dt><dd>Используются для постоянного улучшения Улучшенных предметов.</dd></dl>
+	  <dl class="gloss-item"><dt><img src="https://i127.fastpic.org/big/2026/0302/72/909c4da43dbb77e192bee28d965fc572.png" class="wi" alt="Компоненты предметов"> Капсула нанитов</dt><dd>Используются для постоянного улучшения огнестрельного оружия в Кузнице.</dd></dl>
+    </div>
+  </section>
+
+  <!-- СТИХИИ -->
+  <section id="elements">
+    <div class="section-title"><span class="icon">⚡</span> Стихии</div>
+    <div class="element-grid">
+
+      <div class="el-card cryo">
+        <div class="el-name"><img src="https://wiki.tribesdepot.com/images/c/ce/T_TooltipIcon_Chill.png" alt="Cryo"> Холод  (Cryo)</div>
+        <div class="el-debuff"><strong>Обморожение (Chill):</strong> Снижает скорость передвижения цели на 30% на 6 секунд.</div>
+        <div class="el-proc"><img src="https://wiki.tribesdepot.com/images/3/30/T_TooltipIcon_Shatter.png" class="wi1" alt=""><strong> [Прок] Раскол (Shatter):</strong> Осколки льда разлетаются от цели, нанося урон и накладывая Заморозку в радиусе 6 м.</div>
+        <div class="el-proc"><img src="https://wiki.tribesdepot.com/images/f/f4/T_TooltipIcon_Freeze.png" class="wi1" alt=""><strong>[Прок] Заморозка (Freeze):</strong> Замораживает цель в ледяном блоке на 2 секунды, наносит урон и накладывает Заморозку на ближайших врагов.</div>
+      </div>
+
+      <div class="el-card fire">
+        <div class="el-name"><img src="https://wiki.tribesdepot.com/images/c/c2/T_TooltipIcon_Burn.png" alt="Fire"> Огонь (Fire)</div>
+        <div class="el-debuff"><strong>Горение (Burn):</strong> Увеличивает получаемый целью урон на 10% в течение 5 секунд.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/c/cf/T_TooltipIcon_Ignite.png" class="wi1" alt="">[Прок] Поджог (Combustion):</strong> Применяет Горение и накладывает суммируемый урон в секунду на врагов в радиусе 8 м.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/d/d5/T_TooltipIcon_Combustion.png" class="wi1" alt="">[Прок] Воспламенение (Ignite):</strong> Применяет Горение и мощный суммируемый урон в секунду.</div>
+      </div>
+
+      <div class="el-card lightning">
+        <div class="el-name"><img src="https://wiki.tribesdepot.com/images/a/ae/T_TooltipIcon_Shock.png" alt="Lightning"> Молния (Lightning)</div>
+        <div class="el-debuff"><strong>Шок (Shock):</strong> Увеличивает шанс крит. удара по цели на 15% в течение 6 секунд.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/2/22/T_TooltipIcon_ChainLightning.png" class="wi1" alt="">[Прок] Цепная молния (Chain Lightning):</strong> Поражает и накладывает Шок на до 3 ближайших врагов.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/6/6d/T_TooltipIcon_LightningBolt.png" class="wi1" alt="">[Прок] Молния (Lightning Bolt):</strong> Массивный урон и Шок для врагов рядом с целью.</div>
+      </div>
+
+      <div class="el-card void">
+        <div class="el-name"><img src="https://wiki.tribesdepot.com/images/2/21/T_TooltipIcon_Corruption.png" alt="Void"> Пустота (Void)</div>
+        <div class="el-debuff"><strong>Скверна (Corruption):</strong> Снижает урон цели на 20% в течение 8 секунд.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/c/c4/T_TooltipIcon_VoidTendrils.png" class="wi1" alt="">[Прок] Щупальца Пустоты (Void Tendrils):</strong> Связывает цель с 4 ближайшими врагами (15 м), перенаправляя 20% урона на всю сеть на 6 с.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/0/02/T_TooltipIcon_Singularity.png" class="wi1" alt="">[Прок] Сингулярность (Singularity):</strong> Притягивает врагов в радиусе 5.5 м, наносит урон и накладывает Скверну.</div>
+      </div>
+
+      <div class="el-card plasma">
+        <div class="el-name"><img src="https://wiki.tribesdepot.com/images/e/e9/T_PerkFamily_Plasma_Parent.png" alt="Plasma"> Плазма (Plasma) <em style="font-size:10px;color:var(--muted);margin-left:4px;">Разбл.: Зона 1</em></div>
+        <div class="el-debuff"><strong>Поток (Flux):</strong> Снижает скорость атаки цели на 30% в течение 6 секунд.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/d/dd/T_TooltipIcon_PlasmaOrb.png" class="wi1" alt="">[Прок] Плазменный шар (Plasma Ball):</strong> Периодически наносит урон ближайшим врагам и накладывает Поток.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/7/75/T_TooltipIcon_PlasmaSeeker.png" class="wi1" alt="">[Прок] Плазменный искатель (Plasma Seeker):</strong> Ищет ближайшего врага, наносит урон и накладывает Поток.</div>
+      </div>
+
+      <div class="el-card psionic">
+        <div class="el-name"><img src="https://wiki.tribesdepot.com/images/6/65/T_TooltipIcon_Fracture.png" class="psi" alt="Psionic"> Псионика (Psionic) <em style="font-size:10px;color:var(--muted);margin-left:4px;">Разбл.: Зона 2</em></div>
+        <div class="el-debuff"><strong>Трещина (Fracture):</strong> Даёт 15% шанс оглушить цель при получении дополнительного урона на 5 секунд.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/d/dc/T_TooltipIcon_Punch.png" class="wi1" alt="">[Прок] Психический удар (Psychic Punch):</strong> Отбрасывает врагов, наносит урон и накладывает Трещину.</div>
+        <div class="el-proc"><strong><img src="https://wiki.tribesdepot.com/images/5/58/T_TooltipIcon_Slam.png" class="wi1" alt="">[Прок] Телекинетический удар (Telekinetic Slam):</strong> Поднимает врагов в воздух и бросает о землю, наносит урон и накладывает Трещину.</div>
+      </div>
+
+      <div class="el-card radio", id="augments1">
+        <div class="el-name"><img src="https://i127.fastpic.org/big/2026/0302/24/af83ad040b5073ab938271443e1b8524.png" alt="Radiation" class="psi"> Радиация (Radiation) <em style="font-size:10px;color:var(--muted);margin-left:4px;">Разбл.: Зона 4</em></div>
+        <div class="el-debuff"><strong>Радиация (Radiation):</strong> Накладывает облучение, увеличивая урон по уязвимым местам на 15% на 6 секунд.</div>
+        <div class="el-proc"><strong><img src="https://i127.fastpic.org/big/2026/0303/1e/4bbd1ac7487909cf9b45b240434b141e.png" class="wi1" alt="">[Прок] Атомная сверхновая (Nova):</strong> распространяется волной и накладывает облучение.</div>
+        <div class="el-proc"><strong><img src="https://i127.fastpic.org/big/2026/0303/d3/fa279328442c7e8982d41ecc0a476ad3.png" class="wi1" alt="">[Прок] Гамма-луч (Gamma-ray):</strong> Направляет луч в точку прицела, действует 5 сек, при попадании наносит урон, накладывает облучение.</div>
+      </div>
+
+    </div>
+  </section>
+  
+  <!-- АУГМЕНТЫ -->
+  <section id="augments">
+    <div class="section-title"><span class="icon">🔧</span> Аугменты</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Название</th><th>Эффекты</th><th>Разблокировка</th></tr></thead>
+        <tbody>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/4/4a/T_AugmentIcon_Aiming.png" class="wi1" alt=""> <strong>Прицеливание: Крит</strong></td><td>Прицеливание на 50% быстрее. В прицеле: +25% шанс крита, +80% урон крита, враги подсвечены.</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/4/4a/T_AugmentIcon_Aiming.png" class="wi1" alt=""> <strong>Прицеливание: Стихия</strong></td><td>Прицеливание на 50% быстрее. В прицеле: +75% шанс прока, +75% урон стихийного прока, враги подсвечены.</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/4/4a/T_AugmentIcon_Aiming.png" class="wi1" alt=""> <strong>Прицеливание: Уязвимость</strong></td><td>Прицеливание на 50% быстрее. В прицеле: +100% урон по слабым местам, легче попасть, враги подсвечены.</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/3/3f/T_AugmentIcon_Ammo.png" class="wi1" alt=""> <strong>Патроны: Крит</strong></td><td>+200% к магазину. За каждый недостающий патрон: +2% шанс крита (макс. 50%), +2% урон крита (макс. 50%).</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/3/3f/T_AugmentIcon_Ammo.png" class="wi1" alt=""> <strong>Патроны: Стихия</strong></td><td>+200% к магазину. За каждый недостающий патрон: +1% шанс прока (макс. 50%), +2% урон стихийного прока (макс. 100%).</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/3/3f/T_AugmentIcon_Ammo.png" class="wi1" alt=""> <strong>Патроны: Уязвимость</strong></td><td>+200% к магазину. Легче попасть в слабые места. За каждый недостающий патрон: +2% урон по слабым местам (макс. 100%).</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/8/84/T_AugmentIcon_Hipfire.png" class="wi1" alt=""> <strong>Навскидку: Крит</strong></td><td>Без прицела: +100% урон крита, +20% скорость движения, -20% разброс.</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/8/84/T_AugmentIcon_Hipfire.png" class="wi1" alt=""> <strong>Навскидку: Стихия</strong></td><td>Без прицела: +50% урон стихийного прока, +100% шанс прока, +20% скорость движения, -20% разброс.</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/8/84/T_AugmentIcon_Hipfire.png" class="wi1" alt=""> <strong>Навскидку: Уязвимость</strong></td><td>Без прицела: каждое попадание +20% урон по слабым местам на 5 с (макс. 100%), легче попасть, +20% скорость, -20% разброс.</td><td>—</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/e/e9/T_AugmentIcon_ShortRange.png" class="wi1" alt=""> <strong>Ближний бой: Крит</strong></td><td>Ближние враги дают: +10% сопротивление урону (макс. 80%), +80% шанс крита (-4%/м), +30% урон крита (-1.5%/м).</td><td>Зона 1: Ближний бой</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/e/e9/T_AugmentIcon_ShortRange.png" class="wi1" alt=""> <strong>Ближний бой: Стихия</strong></td><td>Ближние враги: +10% сопр. (макс. 80%), +150% шанс прока (-6%/м), +75% урон стихийного прока (-7.5%/м).</td><td>Зона 1: Ближний бой</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/e/e9/T_AugmentIcon_ShortRange.png" class="wi1" alt=""> <strong>Ближний бой: Уязвимость</strong></td><td>Ближние враги: +10% сопр. (макс. 80%), попадания считаются слабыми местами, +50% урон (-2.5%/м).</td><td>Зона 1: Ближний бой</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/3/3b/T_AugmentIcon_LongRange.png" class="wi1" alt=""> <strong>Дальний бой: Крит</strong></td><td>Нет отдачи и падения урона. За каждый метр: +2% шанс крита (макс. 40%), +5% урон крита (макс. 100%).</td><td>Зона 1: Снайпер<h2 id="perks-elemental1"></h2></td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/3/3b/T_AugmentIcon_LongRange.png" class="wi1" alt=""> <strong>Дальний бой: Стихия</strong></td><td>Нет отдачи и падения урона. За каждый метр: +5% шанс прока (макс. 100%), +5% урон прока (макс. 100%).</td><td>Зона 1: Снайпер</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/3/3b/T_AugmentIcon_LongRange.png" class="wi1" alt=""> <strong>Дальний бой: Уязвимость</strong></td><td>Нет отдачи. Легче попасть в слабые места. За каждый метр: +7.5% урон по слабым местам (макс. 150%).</td><td>Зона 1: Снайпер</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/2/28/T_AugmentIcon_GlassCannon.png" class="wi1" alt=""> <strong>Стеклянная пушка</strong></td><td>+100% ко всем видам урона и шансу прока. +100% к получаемому урону. Сквозной урон по щиту не снижает здоровье.</td><td>Зона 2: Стеклянная пушка</td></tr>
+          <tr><td><img src="https://wiki.tribesdepot.com/images/4/42/T_AugmentIcon_MarshalMaster.png" class="wi1" alt=""> <strong>Мастер рукопашного боя</strong></td><td>+50% урон оружием ближнего боя. -50% урон дальнего боя.</td><td>Зона 3: Копьеносец</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ПЕРКИ: СТИХИЙНЫЕ -->
+  <section id="perks-elemental">
+    <div class="section-title"><span class="icon">🌀</span> Перки: Стихийные</div>
+    <p style="font-size:16px;margin-bottom:14px;">В одном забеге можно выбрать <b><color="white">только 1 стихийный перк</color></b>. Каждая таблица — семейство перков: первый открывает доступ к остальным.</p>
+
+    <div class="element-grid">
+      <div class="el-card cryo">
+        <div class="perk-el-header"><img src="https://wiki.tribesdepot.com/images/0/03/T_PerkFamily_Cryo_Parent.png" alt="Cryo"><div class="el-name" style="margin:0">Семейство Холод</div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+          <tbody>
+            <tr><td><strong><img src="https://wiki.tribesdepot.com/images/0/03/T_PerkFamily_Cryo_Parent.png" class="wi2" alt=""><p>Холод</p></strong></td><td>+30% урона Холодом. Урон Холод накладывает Заморозку (–30% скорость движения 6 с).</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/0/09/T_PerkFamily_Cryo_Child1.png" class="wi2" alt="">Обморожение</td><td>+20% урона Холодом. Заморозка также снижает скорость атаки на 50% и дополнительно скорость движения на 10%.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/d/d6/T_PerkFamily_Cryo_Child2.png" class="wi2" alt="">Похоладание</td><td>+15% урона Холодом. +25% шанс прока для Осколков и Заледенения.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/d/d6/T_PerkFamily_Cryo_Child3.png" class="wi2" alt="">Метель</td><td>+25% урона Холодом. Убийство замороженной цели создаёт метель в области на 5 с.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/b/b7/T_PerkFamily_Cryo_Child4.png" class="wi2" alt="">Сквозь снега</td><td>+20% урона Холодом. Замороженные цели в радиусе 10 м получают +25% урона.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="el-card fire">
+        <div class="perk-el-header"><img src="https://wiki.tribesdepot.com/images/a/ad/T_PerkFamily_Fire_Parent.png" alt="Fire"><div class="el-name" style="margin:0">Семейство Огня</div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+          <tbody>
+            <tr><td><strong><div style="display:flex"><img src="https://wiki.tribesdepot.com/images/a/ad/T_PerkFamily_Fire_Parent.png" class="wi2" alt="">Огонь</strong></td><td></div>+30% урона Огнём. Накладывает Поджог (+10% к получаемому урону 5 с).</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/f/fd/T_PerkFamily_Fire_Child1.png" class="wi2" alt="">Перегрев</td><td>+20% урона Огнём. Поджог длится на 2 с дольше и распространяется в радиусе 5 м.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/7/7e/T_PerkFamily_Fire_Child2.png" class="wi2" alt="">Разжигание</td><td>+15% урона Огнём. +25% шанс прока Возгорания и Воспламенения.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/4/4b/T_PerkFamily_Fire_Child3.png" class="wi2" alt="">Инферно</td><td>+15% урона Огнём. Убийство горящей цели: +20% урона на 5 с.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/9/9a/T_PerkFamily_Fire_Child4.png" class="wi2" alt="">Обжигающая уязвимость</td><td>+15% урона Огнём. +25% урона по слабым местам горящих целей.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="el-card lightning">
+        <div class="perk-el-header"><img src="https://wiki.tribesdepot.com/images/8/8b/T_PerkFamily_Lightning_Parent.png" alt="Lightning"><div class="el-name" style="margin:0">Семейство Молнии</div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+          <tbody>
+            <tr><td><strong><img src="https://wiki.tribesdepot.com/images/8/8b/T_PerkFamily_Lightning_Parent.png" class="wi2" alt="">Молния</strong></td><td>+30% урона Молнией. Накладывает Шок (+15% шанс крита по цели 6 с).</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/4/4b/T_PerkFamily_Lightning_Child1.png" class="wi2" alt="">Изоляция</td><td>+20% урона Молнией. Шок: +10% шанс крита, +15% шанс оглушения.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/2/28/T_PerkFamily_Lightning_Child2.png" class="wi2" alt="">Проводник</td><td>+15% урона Молнией. +25% шанс прока Цепной молнии и Удара молнии.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/1/1a/T_PerkFamily_Lightning_Child3.png" class="wi2" alt="">Статический импульс</td><td>+10% урона Молнией. Криты по цели под Шоком наносят 20% урона в радиусе 6 м.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/7/7c/T_PerkFamily_Lightning_Child4.png" class="wi2" alt="">Высокое напряжение</td><td>+15% урона Молнией. +20% критурона по целям под Шоком.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="el-card plasma">
+        <div class="perk-el-header"><img src="https://wiki.tribesdepot.com/images/e/e9/T_PerkFamily_Plasma_Parent.png" alt="Plasma"><div class="el-name" style="margin:0">Семейство Плазмы</div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+          <tbody>
+            <tr><td><strong><img src="https://wiki.tribesdepot.com/images/e/e9/T_PerkFamily_Plasma_Parent.png" class="wi2" alt="">Плазма</strong></td><td>+30% урона Плазмой. Накладывает Поток (–30% скорость атаки 6 с).</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/d/de/T_PerkFamily_Plasma_Child1.png" class="wi2" alt="">Разлив сил</td><td>+20% урона Плазмой. Поток длится +2 с, 25% шанс распространения в радиусе 10 м при попадании.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/5/5f/T_PerkFamily_Plasma_Child2.png" class="wi2" alt="">Ионизированный поток</td><td>+15% урона Плазмой. +25% шанс прока Плазменного шара и Ищейки.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/f/f0/T_PerkFamily_Plasma_Child3.png" class="wi2" alt="">Охладитель ядра</td><td>+15% урона Плазмой. Убийство цели с Потоком выпускает 2 энергетических шара (по 50 урона).</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/7/72/T_PerkFamily_Plasma_Child4.png" class="wi2" alt="">Цветение плазмы</td><td>+15% урона Плазмой. +5% скорость стрельбы и перезарядки за каждого врага под Потоком (макс. 30%).</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="el-card psionic">
+        <div class="perk-el-header"><img src="https://wiki.tribesdepot.com/images/4/4e/T_PerkFamily_Psionic_Parent.png" alt="Psionic"><div class="el-name" style="margin:0">Семейство Псионики</div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+          <tbody>
+            <tr><td><strong><img src="https://wiki.tribesdepot.com/images/4/4e/T_PerkFamily_Psionic_Parent.png" class="psi" alt="">Псионика</strong></td><td>+30% урона Псионикой. Накладывает Трещину (+15% шанс оглушения 5 с).</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/6/64/T_PerkFamily_Psionic_Chidl1.png" class="wi2" alt="">Нейрошок</td><td>+20% урона Псионикой. Трещина: +10% шанс оглушения, -3 с кулдаун оглушения.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/b/bb/T_PerkFamily_Psionic_Child2.png" class="wi2" alt="">Церебральный поток</td><td>+15% урона Псионикой. +25% шанс прока Психического удара и Телекинетического удара.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/0/0f/T_PerkFamily_Psionic_Child3.png" class="wi2" alt="">Когнитивное сотрясение</td><td>+15% урона Псионикой. Убийство цели с Трещиной: психический взрыв 75 урона в радиусе 8 м с отбрасыванием.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/3/38/T_PerkFamily_Psionic_Child4.png" class="wi2" alt="">Течение мыслей</td><td>+15% урона Псионикой. +20% урона при стрельбе с бедра по целям с Трещиной.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="el-card void">
+        <div class="perk-el-header"><img src="https://wiki.tribesdepot.com/images/0/0f/T_PerkFamily_Void_Parent.png" alt="Void"><div class="el-name" style="margin:0">Семейство Пустоты</div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+          <tbody>
+            <tr><td><strong><img src="https://wiki.tribesdepot.com/images/0/0f/T_PerkFamily_Void_Parent.png" class="wi2" alt="">Пустота</strong></td><td>+30% урона Пустотой. Накладывает Разложение (–20% урон цели 8 с).</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/9/95/T_PerkFamily_Void_Child1.png" class="wi2" alt="">Вершитель рока</td><td>+25% урона Пустотой. Разложение длится +2 с, каждая поражённая цель даёт +10% урон гранатами (макс. 50%).</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/4/41/T_PerkFamily_Void_Child2.png" class="wi2" alt="">Внутренняя бездна</td><td>+15% урона Пустотой. +25% шанс прока Щупалец и Сингулярности.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/4/4e/T_PerkFamily_Void_Child3.png" class="wi2" alt="">Тёмный удар</td><td>+15% урона Пустотой. Убийство цели с Разложением: 150 урона пустотой ближайшему врагу.</td></tr>
+            <tr><td><img src="https://wiki.tribesdepot.com/images/e/eb/T_PerkFamily_Void_Child4.png" class="wi2" alt="">Теневое зрение</td><td>+20% урона Пустотой. Цели с Разложением на расстоянии ≥10 м получают +30% урона.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="el-card radio">
+        <div class="perk-el-header"><img src="https://i127.fastpic.org/big/2026/0302/24/af83ad040b5073ab938271443e1b8524.png" alt="Radio"><div class="el-name" style="margin:0">Семейство Радиации</div></div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+          <tbody>
+            <tr><td><strong><img src="https://i127.fastpic.org/big/2026/0302/24/af83ad040b5073ab938271443e1b8524.png" class="wi1" alt="">Радиация</strong></td><td>+30% урона Радиацией. Накладывает облучение, увеличивая урон по уязвимым местам на 15% на 6 секунд.</td></tr>
+            <tr><td><img src="https://i127.fastpic.org/big/2026/0303/84/e8391102685c983dca6060f4bb513184.png" class="wi1" alt="">Разлив сил</td><td>+20% урона Радиацией. Облучение повышает урон по уязвимым местам на 15% и повышает вероятность прока на 10% при стрельбе.</td></tr>
+            <tr><td><img src="https://i127.fastpic.org/big/2026/0303/b3/147e7227639c00480e69ed4192f2c7b3.png" class="wi1" alt="">Изотопический фокус</td><td>+15% урона Радиацией. +25% шанс прока Сверхновой и Гамма-луча.</td></tr>
+            <tr><td><img src="https://i127.fastpic.org/big/2026/0303/dd/eb26a4f3a6011237c21ab4db59a5aedd.png" class="wi1" alt="">Плавление</td><td>+15% урона Радиацией.  Попадание в уже Облучённого<h2 id="perks-offensive1"></h2> врага вызывет эффект Плавления. Следующий выстрел, который он получит в течение 2 секунд, наносет 200% урона в радиусе 15 метров. (Кулдаун: 1 секунда).</td></tr>
+            <tr><td><img src="https://i127.fastpic.org/big/2026/0303/f2/a48c15eebc7319a58229b094062442f2.png" class="wi1" alt="">Молекулярная точность</td><td>+15% урона Радиацией. +20% урона по облученным целям при прицеливании.</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ПЕРКИ: АТАКУЮЩИЕ -->
+  <section id="perks-offensive">
+    <div class="section-title"><span class="icon">⚔️</span> Перки: Атакующие</div>
+
+    <div class="subsection-title">Компаньон (Боевой бот)</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/a/a9/T_PerkFamily_Bot_Parent.png" class="wi2" alt=""> <strong>Бот спутник</strong></td><td>+1 бот-компаньон. Боты помогают в бою и возрождаются после уничтожения.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/d8/T_PerkFamily_Bot_Child1.png" class="wi2" alt=""> Мощный бот</td><td>+1 бот. Боты: +15% HP, +35% урон.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/73/T_PerkFamily_Bot_Child2.png" class="wi2" alt=""> Скорострельный бот</td><td>+1 бот. Боты: +15% HP и урон, +20% скорость стрельбы.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/2a/T_PerkFamily_Bot_Child3.png" class="wi2" alt=""> Бот наготове</td><td>+1 бот. Боты: +15% HP и урон, возрождаются на 50% быстрее.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/52/T_PerkFamily_Bot_Child4.png" class="wi2" alt=""> Стихийный бот</td><td>+1 бот. Боты: +15% HP и урон, получают стихийное усиление и все ваши стихийные бонусы.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Ближний бой</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/1/1c/T_PerkFamily_Melee_Parent.png" class="wi2" alt=""> <strong>Призрачный клинок</strong></td><td>+45% урон в ближнем бою. Убийство оружием ближнего боя → невидимость на 5 с.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/61/T_PerkFamily_Melee_Child1.png" class="wi2" alt=""> Удар в спину</td><td>+45% урон в ближнем бою. +50% урон при атаке сзади (Backstab).</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/5b/T_PerkFamily_Melee_Child2.png" class="wi2" alt=""> Отточенное лезвие</td><td>+45% урон в ближнем бою. +40% шанс прока оружием ближнего боя.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/c4/T_PerkFamily_Melee_Child3.png" class="wi2" alt=""> Боевая походка</td><td>+45% урон в ближнем бою. +20% дальность рывка, +15% радиус атаки.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/90/T_PerkFamily_Melee_Child4.png" class="wi2" alt=""> Забить дыру</td><td>+45% урон в ближнем бою. Последовательные удары: +20% урон (макс. 100%) на 5 с.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Гранаты</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/1/10/T_PerkFamily_Grenade_Parent.png" class="wi2" alt=""> <strong>Дождь гранат</strong></td><td>+30% урон гранат. Убийство гранатой: 35% шанс заспавнить гранату под ближайшим врагом.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/e/e2/T_PerkFamily_Grenade_Child1.png" class="wi2" alt=""> Двойна детонация</td><td>+1 заряд гранаты. +20% урон гранат, +25% радиус взрыва.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/e/e9/T_PerkFamily_Grenade_Child2.png" class="wi2" alt=""> Усилитель взрыва</td><td>+1 заряд гранаты. +20% урон гранат. +15% бонусный урон за каждую цель во взрыве.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/c8/T_PerkFamily_Grenade_Child3.png" class="wi2" alt=""> Перезарядка</td><td>+10% урон гранат. Удерживайте 2.5 с для +50% урона. Убийства снижают кулдаун на 1 с.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/22/T_PerkFamily_Grenade_Child4.png" class="wi2" alt=""> Обнажающий взрыв</td><td>+10% урон гранат. +30% урон по врагам с >80% HP. Попавшие под взрыв: +15% урон оружием на 3 с.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Универсальность оружия</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/98/T_PerkFamily_WeaponMaster_Parent.png" class="wi2" alt=""> <strong>Во всеоружии</strong></td><td>+20% урон оружием. Убийства пополняют магазин незаряженного оружия.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/0/02/T_PerkFamily_WeaponMaster_Child1.png" class="wi2" alt=""> Усиленная синергия</td><td>+15% урон оружием. +25% урон на 5 с после убийства.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/d7/T_PerkFamily_WeaponMaster_Child2.png" class="wi2" alt=""> Магнетизм</td><td>+15% урон. +30% скорость смены оружия. Без расхода патронов 3 с после смены.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/62/T_PerkFamily_WeaponMaster_Child3.png" class="wi2" alt=""> Ускоренная замена</td><td>+15% урон. Смена оружия: +15% скорость стрельбы, +20% урон на 5 с.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/6a/T_PerkFamily_WeaponMaster_Child4.png" class="wi2" alt=""> Гармоничный боец</td><td>+15% урон. Убийства в ближнем бою –0.5 с кулдауна гранаты. Убийства гранатой: +10% урон в ближнем бою/убийство на 3 с.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Специализация оружия <em>(Разблокировка: Зона 2: Хаос II)</em></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/b/b0/T_PerkFamily_Gunner_Parent.png" class="wi2" alt=""> <strong>Свинцовая голова</strong></td><td>+30% урон огнестрельным оружием. +10% скорость перезарядки и разброс, –10% отдача и падение урона.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/3/37/T_PerkFamily_Gunner_Child1.png" class="wi2" alt=""> Мастер доп оружия</td><td>+20% урон. Вторичное оружие: +15% дальность, +15% шанс крита, атаки пробивают на 70% урона.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/2e/T_PerkFamily_Gunner_Child2.png" class="wi2" alt=""> Пробойник брони</td><td>+20% урон. Вторичное оружие: –20% разброс, +20% перезарядка. Последовательные попадания: +2% урона (макс. 20%).</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/7a/T_PerkFamily_Gunner_Child3.png" class="wi2" alt=""> Тяжёлая рука</td><td>+20% урон. Основное оружие: +20% магазин, –20% отдача. За каждую секунду стрельбы: +10% сопр. урону (макс. 30%).</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/5f/T_PerkFamily_Gunner_Child4.png" class="wi2" alt=""> Кинетическое копьё</td><td>+20% урон. Основное оружие: +15% скорость движения в прицеле, +15% урон по слабым местам, попадания в слабые места рикошетят на 30%.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Дистанция боя <em>(Разблокировка: Зона 3: Легион)</em></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/df/T_PerkFamily_CombatStyle_Parent.png" class="wi2" alt=""> <strong>Боевые инстинкты</strong></td><td>+25% урон оружием. +15% скорость движения и бега. +35% шанс уклонения на 1 с после рывка.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/f/f6/T_PerkFamily_CombatStyle_Child1.png" class="wi2" alt=""> Адреналиновый рефлекс</td><td>+20% урон в радиусе 10 м. Убийства с бедра в 10 м: возврат 15% магазина, +5% скорость стрельбы на 10 с (макс. 25%).</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/3/3c/T_PerkFamily_CombatStyle_Child2.png" class="wi2" alt=""> Режущее острие</td><td>+20% урон в радиусе 10 м. В прицеле: +25% скорость движения, +20% шанс оглушения по слабым местам в 10 м.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/4/45/T_PerkFamily_CombatStyle_Child3.png" class="wi2" alt=""> Реактивный стрелок</td><td>+20% урон за 10 м. С бедра: –20% разброс, каждое 3-е попадание +5% шанс и урон крита на 5 с (макс. 30%).</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/61/T_PerkFamily_CombatStyle_Child4.png" class="wi2" alt=""> Протокол точности</td><td>+20% урон за 10 м. В прицеле: –20% отдача, последовательные попадания +5% урон по слабым местам (макс. 25%).</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Стихийные перки атаки <em>(Разблокировка: Зона 3: Хаос III)</em></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/e/e2/T_PerkFamily_Chroma_Parent.png" class="wi2" alt=""><h2 id="perks-defensive1"></h2> <strong>Хроматические клетки</strong></td><td>+30% стихийный урон. Наложение стихийного дебаффа: 30% шанс наложить ещё один случайный дебафф.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/1/19/T_PerkFamily_Chroma_Child2.png" class="wi2" alt=""> Радужное уплотнение</td><td>+20% стихийный урон. Наложение стихийного дебаффа наносит 30 урона соответствующей стихии.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/55/T_PerkFamily_Chroma_Child3.png" class="wi2" alt=""> Переливающее рассеивание</td><td>+30% стихийный урон. Попадание по цели с 2+ дебаффами применяет Дифракцию (+20% шанс прока).</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/3/3f/T_PerkFamily_Chroma_Child1.png" class="wi2" alt=""> Призматическое перерождение</td><td>+10% стихийный урон. Убийство цели с 5 стихийными дебаффами: 500 урона в радиусе 15 м.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/3/3f/T_PerkFamily_Chroma_Child4.png" class="wi2" alt=""> Усиленная рефракция</td><td>+15% стихийный урон. Проки по целям с 3+ дебаффами применяют Рефракцию (+20% урон проков).</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ПЕРКИ: ЗАЩИТНЫЕ -->
+  <section id="perks-defensive">
+    <div class="section-title"><span class="icon">🛡️</span> Перки: Защитные</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:14px;">В одном забеге можно выбрать только 1 защитный перк.</p>
+
+    <div class="subsection-title">Щиты</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/7b/T_PerkFamily_Shield_Parent.png" class="wi2" alt=""> <strong>Оптимизатор щита</strong></td><td>+30% щит. +25% урон при щите >50%. Задержка восстановления –4 с.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/77/T_PerkFamily_Shield_Child1.png" class="wi2" alt=""> Экстренный разгон</td><td>+15% щит. При пробитии щита: скорость восстановления ×2, задержка –4 с.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/a/a5/T_PerkFamily_Shield_Child3.png" class="wi2" alt=""> Перераспределение энергии</td><td>+15% щит. Пока щит цел: кулдауны –15%, убийства восстанавливают 2 единицы щита.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/76/T_PerkFamily_Shield_Child2.png" class="wi2" alt=""> Реактивное отражение</td><td>+15% щит. Щит отражает 200% получаемого урона обратно атакующему.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/a/ae/T_PerkFamily_Shield_Child4.png" class="wi2" alt=""> Драйвер перегрузки</td><td>+15% щит. При полном восстановлении щита на 5 с: +20% скорость движения, перезарядки и стрельбы.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Здоровье</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/da/T_PerkFamily_Health_Parent.png" class="wi2" alt=""> <strong>Оживитель</strong></td><td>+25% макс. HP. Аптечки лечат вдвое больше. Убийства восстанавливают 5% отсутствующего здоровья.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/9b/T_PerkFamily_Health_Child2.png" class="wi2" alt=""> Главный оплот</td><td>+20% макс. HP. При падении ниже 35% HP: щит = 25% макс. HP на 5 с (кулдаун 20 с).</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/a/a3/T_PerkFamily_Health_Child3.png" class="wi2" alt=""> Биохимик</td><td>+15% макс. HP. +0.5% урона за каждый 1% отсутствующего здоровья.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/0/07/T_PerkFamily_Health_Child1.png" class="wi2" alt=""> Усиленная перегрузка</td><td>+15% макс. HP. При полном здоровье избыточное лечение даёт бонус урона на 8 с.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/e/e7/T_PerkFamily_Health_Child4.png" class="wi2" alt=""> Накачка с орбиты</td><td>+15% макс. HP. Аптечки собираются автоматически. Подбор аптечки: +35% урон оружием на 8 с.</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Броня <em>(Разблокировка: Зона 2: Охотник за головами)</em></div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Перк</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/91/T_PerkFamily_Armor_Parent.png" class="wi2" alt=""> <strong>Двигатель железной крови</strong></td><td>+1 250 брони. +1% урон за каждые 300 единиц брони.<h2 id="weapons1"></h2></td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/5a/T_PerkFamily_Armor_Child1.png" class="wi2" alt=""> Импульсное покрытие</td><td>+750 брони. +150 брони за убийство на 5 с (макс. 1 500). Каждое убийство обновляет все стаки.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/a/ae/T_PerkFamily_Armor_Child2.png" class="wi2" alt=""> Укреплённая основа</td><td>+750 брони. +500 брони/с в неподвижности (макс. 2 500). –125/с при движении.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/0/05/T_PerkFamily_Armor_Child3.png" class="wi2" alt=""> Шипованная броня</td><td>+1 250 брони. Враги, атакующие вас, получают 50 + 5% вашей брони как бонусный урон.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/8/8c/T_PerkFamily_Armor_Child4.png" class="wi2" alt=""> Композитная броня</td><td>+1 000 брони. При броне >3 000: первый удар отменяется (обновляется через 25 с без урона).</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ОРУЖИЕ -->
+  <section id="weapons">
+    <div class="section-title"><span class="icon">🔫</span> Оружие</div>
+
+    <div class="subsection-title">Основное оружие (Primary)</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th>Тип</th><th>Режим</th><th class="num">Урон</th><th class="num">Скорость</th><th class="num">Магазин</th><th class="num">Перезарядка</th><th class="num">Слаб. место</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/2f/Icon_Weapon_HUD_AssaultRifle.png" class="wi1" alt=""> AR-70 Vanguard</td><td>Штурмовая винтовка</td><td>Авто</td><td class="num">19</td><td class="num">12.05</td><td class="num">24</td><td class="num">2.55 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/f/fe/Icon_Weapon_HUD_BurstAR.png" class="wi1" alt=""> BP-44 Harrier</td><td>Очередями</td><td>3 выстр.</td><td class="num">24×3</td><td class="num">11.90</td><td class="num">30</td><td class="num">2.5 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/92/T_Icon_Weapon_HUD_HeavyAR.png" class="wi1" alt=""> HK-44 Warrior</td><td>Штурмовая винтовка</td><td>Авто</td><td class="num">21</td><td class="num">10.81</td><td class="num">24</td><td class="num">2.2 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/72/Icon_Weapon_HUD_LMG_Heavy.png" class="wi1" alt=""> HK-92 Warbringer</td><td>Пулемёт</td><td>Авто</td><td class="num">30</td><td class="num">7.41</td><td class="num">30</td><td class="num">2.5 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/66/Icon_Weapon_HUD_LMG.png" class="wi1" alt=""> HR6C Juggernaut</td><td>Пулемёт</td><td>Авто</td><td class="num">26</td><td class="num">9.09</td><td class="num">40</td><td class="num">3.3 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/1/17/Icon_Weapon_HUD_EMP.png" class="wi1" alt=""> Ion Driver</td><td>Снайперская</td><td>Полуавто</td><td class="num">210 / 60</td><td class="num">1.33</td><td class="num">5</td><td class="num">3.1 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/de/Icon_Weapon_HUD_SniperRifle.png" class="wi1" alt=""> M-100 Crosspoint</td><td>Снайперская</td><td>Полуавто</td><td class="num">150</td><td class="num">1.00</td><td class="num">7</td><td class="num">3.5 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/99/Icon_Weapon_HUD_DMR.png" class="wi1" alt=""> MP18-L Revenant</td><td>Полуснайперская</td><td>Полуавто</td><td class="num">60</td><td class="num">4.00</td><td class="num">12</td><td class="num">2.9 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/26/Icon_Weapon_HUD_Rifle_Pulse.png" class="wi1" alt=""> PR20x Pulsar</td><td>Штурмовая</td><td>Авто</td><td class="num">23</td><td class="num">10.05</td><td class="num">22</td><td class="num">2.45 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/24/Icon_Weapon_HUD_ShotGun_DB.png" class="wi1" alt=""> T30 Nova Burst</td><td>Дробовик</td><td>Полуавто</td><td class="num">170 (17×10)</td><td class="num">2.50</td><td class="num">6</td><td class="num">3 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/0/0e/Icon_Weapon_HUD_Minigun.png" class="wi1" alt=""> Titan-10 Hellstorm</td><td>Пулемёт (миниган)</td><td>Авто</td><td class="num">17</td><td class="num">19.00</td><td class="num">100</td><td class="num">4.2 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/f/f6/Icon_Weapon_HUD_EnergyLMG.png" class="wi1" alt=""> VLR-72 Tempest</td><td>Пулемёт</td><td>Авто</td><td class="num">27</td><td class="num">8.16</td><td class="num">50</td><td class="num">3.25 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/b/b6/Icon_Weapon_HUD_EnegySMG.png" class="wi1" alt=""> VLR Arcblade</td><td>Пистолет-пулемёт</td><td>Авто</td><td class="num">21</td><td class="num">13.79</td><td class="num">22</td><td class="num">1.65 с</td><td class="num">+35%</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Вторичное оружие (Secondary)</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th>Тип</th><th>Режим</th><th class="num">Урон</th><th class="num">Скорость</th><th class="num">Магазин</th><th class="num">Перезарядка</th><th class="num">Слаб. место</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/b/b9/Icon_Weapon_HUD_ShotGun_Auto.png" class="wi1" alt=""> AS-12 Rampage</td><td>Дробовик</td><td>Авто</td><td class="num">144 (12×12)</td><td class="num">3.33</td><td class="num">12</td><td class="num">2.4 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/64/Icon_Weapon_HUD_Shotgun_DoubleBarrel.png" class="wi1" alt=""> BAS-24 Warden</td><td>Дробовик</td><td>Полуавто</td><td class="num">240 (30×8)</td><td class="num">1.54</td><td class="num">2</td><td class="num">1.5 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/b/bf/Icon_Weapon_HUD_NovaBlaster.png" class="wi2" alt=""> HC8 Overlord</td><td>Пистолет</td><td>Полуавто</td><td class="num">75</td><td class="num">2.63</td><td class="num">8</td><td class="num">2.6 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/2c/Icon_Weapon_HUD_Pistol_Auto.png" class="wi1" alt=""> MPK-17 Snapdragon</td><td>ПП</td><td>Авто</td><td class="num">18</td><td class="num">18.87</td><td class="num">18</td><td class="num">1.45 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/28/Icon_Weapon_HUD_SMG_4Realz.png" class="wi1" alt=""> MPK-47 Blitz</td><td>ПП</td><td>Авто</td><td class="num">17</td><td class="num">17.09</td><td class="num">20</td><td class="num">1.75 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/f/fd/Icon_Weapon_HUD_Pistol_Pulse.png" class="wi2" alt=""> PDS Plex-1</td><td>Пистолет</td><td>Полуавто</td><td class="num">19</td><td class="num">8.33</td><td class="num">18</td><td class="num">1.4 с</td><td class="num">+50%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/cb/Icon_Weapon_HUD_PulsePistol.png" class="wi1" alt=""> PR14x Aeos</td><td>Пистолет</td><td>Полуавто</td><td class="num">32</td><td class="num">8.93</td><td class="num">16</td><td class="num">1.3 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/27/Icon_Weapon_HUD_MagnumPistol.png" class="wi1" alt=""> Sidekick-3 AP</td><td>Пистолет</td><td>Полуавто</td><td class="num">39</td><td class="num">7.04</td><td class="num">14</td><td class="num">1.4 с</td><td class="num">+35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/d6/WeaponIcons_HUD_BurstPistol.png" class="wi1" alt=""> Tritek-3SB</td><td>Пистолет</td><td>3 выстр.</td><td class="num">28</td><td class="num">9.13</td><td class="num">30</td><td class="num">1.35 с</td><td class="num">+35%</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Оружие ближнего боя / Гранаты</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th class="num">Урон</th><th class="num">Скорость атаки</th><th class="num">Слаб. место</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/6f/Icon_Weapon_HUD_Axe_Medium.png" class="wi1" alt=""> Топор (медленный, высокий урон)</td><td class="num">220</td><td class="num">0.75</td><td class="num">?%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/1/10/Icon_Weapon_HUD_Knife.png" class="wi2" alt=""> Нож (быстрый и эффективный)</td><td class="num">125</td><td class="num">0.75</td><td class="num">?%</td></tr>
+        <tr><td><img src="https://i127.fastpic.org/big/2026/0304/e4/d1caeac1cb51b85c34546fe9134481e4.png" class="psi" alt="">  Ударная граната (взрывается при контакте)</td><td class="num">130</td><td colspan="2">Радиус взрыва: 3 м</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Экзотическое оружие</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Разблокировка</th><th>Описание</th><th class="num">Урон</th><th class="num">Магазин</th><th class="num">Перезарядка</th><th class="num">Слаб. место</th></tr></thead>
+      <tbody>
+        <tr><td>Зона 2: Охотник за головами</td><td><img src="https://wiki.tribesdepot.com/images/9/9c/Icon_Weapon_HUD_SniperRifle_Mythic_HeartPiercer.png" class="wi1" alt=""> <strong>M-150 Headhunter</strong> — Экзот. снайперская. Повышенный урон по слабым местам, гарантированный крит и возврат патрона при попадании. Без слабого места — очень слабый урон.</td><td class="num">15</td><td class="num">1</td><td class="num">3.5 с</td><td class="num">+1750%</td></tr>
+        <tr><td>Зона 2: Дуэль</td><td><img src="https://wiki.tribesdepot.com/images/2/23/Icon_Weapon_HUD_Pistol_Auto_Akimbo.png" class="wi1" alt=""> <strong>Iron Squires</strong> — Экзот. пара ПП. +100% шанс прока. Каждый промах +10% разброс (сбрасывается при перезарядке).<h2 id="dps1"></h2></td><td class="num">27</td><td class="num">30</td><td class="num">1.75 с</td><td class="num">+35%</td></tr>
+        <tr><td>Зона 2: Красная линия</td><td><img src="https://wiki.tribesdepot.com/images/4/4e/Icon_Weapon_HUD_StormSlicer.png" class="wi1" alt=""> <strong>Plasma Cycler</strong> — Экзот. пулемёт. +75% урон прока. Каждый промах –10% скорость стрельбы (сбрасывается перезарядкой).</td><td class="num">24</td><td class="num">70</td><td class="num">4.3 с</td><td class="num">+35%</td></tr>
+        <tr><td>Зона 3: Копьеносец</td><td><img src="https://wiki.tribesdepot.com/images/9/94/Icon_Weapon_HUD_Polearm.png" class="wi1" alt=""> <strong>Arc Lance</strong> — Экзот. копьё ближнего боя. Убийство даёт рывок скорости, промах –50% скорость на 2 с.</td><td class="num">160</td><td class="num">—</td><td class="num">—</td><td class="num">?%</td></tr>
+        <tr><td>Зона 3: Курок</td><td><img src="https://wiki.tribesdepot.com/images/0/0f/Icon_Weapon_HUD_SMG_Mythic_BIB.png" class="wi2" alt=""> <strong>Hammerhead MK9</strong> — Экзот. ПП очередями. Все 3 патрона в цель +30% скорость стрельбы, промах –30%.</td><td class="num">32</td><td class="num">48</td><td class="num">1.7 с</td><td class="num">+35%</td></tr>
+        <tr><td>Зона 3: Предвестник</td><td><img src="https://wiki.tribesdepot.com/images/9/9a/Icon_Weapon_HUD_EnegyDRM.png" class="wi1" alt=""> <strong>Darkseer EX2</strong> — Экзот. полуснайперская. Потребляет щит для бонусного урона. Щит постоянно восстанавливается пока оружие активно.</td><td class="num">100</td><td class="num">16</td><td class="num">2.85 с</td><td class="num">+35%</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- DPS -->
+  <section id="dps">
+    <div class="section-title"><span class="icon">📊</span> DPS оружия</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">Данные предоставлены VodugXander (Reddit).</p>
+    <div class="subsection-title">Основное оружие</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th class="num">DPS (с перезарядкой)</th><th class="num">DPS (без перезарядки)</th></tr></thead>
+      <tbody>
+        <tr><td>M-150 Headhunter (Уязвимость)</td><td class="num dps-high">375.0</td><td class="num dps-high">375.0</td></tr>
+        <tr><td>Darkseer EX2</td><td class="num dps-high">218.2</td><td class="num dps-high">257.0</td></tr>
+        <tr><td>Plasma Cycler</td><td class="num dps-high">209.4</td><td class="num dps-high">451.2</td></tr>
+        <tr><td>Titan-10 Hellstorm</td><td class="num dps-high">179.6</td><td class="num dps-high">323.0</td></tr>
+        <tr><td>T30 Nova Burst</td><td class="num dps-high">166.7</td><td class="num dps-high">375.0</td></tr>
+        <tr><td>Ion Driver (заряженный)</td><td class="num dps-high">153.1</td><td class="num dps-high">279.3</td></tr>
+        <tr><td>VLR-72 Tempest</td><td class="num">144.0</td><td class="num">220.3</td></tr>
+        <tr><td>BP-44 Harrier</td><td class="num">143.4</td><td class="num">285.7</td></tr>
+        <tr><td>VLR Arcblade</td><td class="num">142.4</td><td class="num">289.6</td></tr>
+        <tr><td>HR6C Juggernaut</td><td class="num">135.1</td><td class="num">236.3</td></tr>
+        <tr><td>HK-92 Warbringer</td><td class="num">130.1</td><td class="num">222.3</td></tr>
+        <tr><td>MP18-L Revenant</td><td class="num">122.0</td><td class="num">240.0</td></tr>
+        <tr><td>HK-44 Warrior</td><td class="num">114.0</td><td class="num">227.0</td></tr>
+        <tr><td>PR20x Pulsar</td><td class="num">109.1</td><td class="num">231.2</td></tr>
+        <tr><td>AR-70 Vanguard</td><td class="num">100.4</td><td class="num">299.0</td></tr>
+        <tr><td>M-100 Crosspoint</td><td class="num">100.0</td><td class="num">150.0</td></tr>
+        <tr><td>Ion Driver (незаряженный)</td><td class="num dps-low">43.7</td><td class="num dps-low">79.8</td></tr>
+        <tr><td>M-150 Headhunter (тело)</td><td class="num dps-low">3.3</td><td class="num dps-low">15.0</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Вторичное оружие</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th class="num">DPS (с перезарядкой)</th><th class="num">DPS (без перезарядки)</th></tr></thead>
+      <tbody>
+        <tr><td>Hammerhead MK9</td><td class="num dps-high">397.9</td><td class="num dps-high">711.0</td></tr>
+        <tr><td>AS-12 Rampage</td><td class="num dps-high">287.8</td><td class="num dps-high">479.5</td></tr>
+        <tr><td>Iron Squires<h2 id="elemental-affixes1"></h2></td><td class="num dps-high">247.0</td><td class="num dps-high">529.5</td></tr>
+        <tr><td>Tritek-3SB</td><td class="num">181.2</td><td class="num">255.7</td></tr>
+        <tr><td>BAS-24 Warden </td><td class="num">171.5</td><td class="num">369.6</td></tr>
+        <tr><td>PR14x Aeos</td><td class="num">165.6</td><td class="num">274.6</td></tr>
+        <tr><td>Sidekick-3 AP</td><td class="num">161.1</td><td class="num">274.6</td></tr>
+        <tr><td>MPK-17 Snapdragon</td><td class="num">134.8</td><td class="num">339.7</td></tr>
+        <tr><td>MPK-47 Blitz</td><td class="num">116.4</td><td class="num">290.5</td></tr>
+        <tr><td>HC8 Overlord</td><td class="num">106.3</td><td class="num">197.3</td></tr>
+        <tr><td>PDS Plex-1</td><td class="num dps-low">96.0</td><td class="num dps-low">158.3</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- СТИХИЙНЫЕ АФФИКСЫ -->
+  <section id="elemental-affixes">
+    <div class="section-title"><span class="icon">🌊</span> Стихийные аффиксы оружия</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Стихийный аффикс переводит оружие на соответствующий тип урона. При наличии нужного стихийного перка каждое попадание накладывает дебафф. Без перка — только проки.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Стихия</th><th>Название</th><th>Эффект</th><th class="num">Урон</th><th>Дальность</th><th>Примечания</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/c4/T_TooltipIcon_VoidTendrils.png" class="wi1" alt="Void"></td><td><span style="color:var(--void)">Щупальца Пустоты</span></td><td>Шанс x% создать Щупальца Пустоты</td><td class="num">30</td><td>50 м</td><td>Связывает до 4 врагов, 20% урона делится на 6 с</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/0/02/T_TooltipIcon_Singularity.png" class="wi1" alt="Void"></td><td><span style="color:var(--void)">Сингулярность</span></td><td>Шанс x% вызвать Сингулярность</td><td class="num">105×2</td><td>5.5 м</td><td>АоЕ вокруг цели, притягивает врагов</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/cf/T_TooltipIcon_Ignite.png" class="wi1" alt="Fire"></td><td><span style="color:var(--fire)">Поджог</span></td><td>Шанс x% Возгорания</td><td class="num">10</td><td>8 м</td><td>АоЕ включая цель, урон в секунду 3 с</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/d5/T_TooltipIcon_Combustion.png" class="wi1" alt="Fire"></td><td><span style="color:var(--fire)">Воспламенение</span></td><td>Шанс x% Воспламенить врага</td><td class="num">50</td><td>—</td><td>Наносит урон огнем одной цели.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/3/30/T_TooltipIcon_Shatter.png" class="wi1" alt="Cryo"></td><td><span style="color:var(--cryo)">Раскол</span></td><td>Шанс x% разлёт Осколков от цели</td><td class="num">100</td><td>6 м</td><td>АоЕ включая цель, разлетается на 3 осколка.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/f/f4/T_TooltipIcon_Freeze.png" class="wi1" alt="Cryo"></td><td><span style="color:var(--cryo)">Обморожение</span></td><td>Шанс x% Заморозить цель</td><td class="num">115</td><td>—</td><td>Заморозка на 2 с</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/22/T_TooltipIcon_ChainLightning.png" class="wi1" alt="Lightning"></td><td><span style="color:var(--lightning)">Цепная молния</span></td><td>Шанс x% Цепной молнии</td><td class="num">80</td><td>10 м</td><td>Прыгает к 3 целям</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/6d/T_TooltipIcon_LightningBolt.png" class="wi1" alt="Lightning"></td><td><span style="color:var(--lightning)">Молния</span></td><td>Шанс x% Удара молнии</td><td class="num">265</td><td>—</td><td>Ударяет в цель, накладывает шок</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/dd/T_TooltipIcon_PlasmaOrb.png" class="wi1" alt="Plasma"></td><td><span style="color:var(--plasma)">Плазменный шар</span></td><td>Шанс x% заспавнить Плазменный шар</td><td class="num">45</td><td>6 м</td><td>Создает шар плазмы, который бьет по области 3 раза</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/75/T_TooltipIcon_PlasmaSeeker.png" class="wi1" alt="Plasma"></td><td><span style="color:var(--plasma)">Плазменный Искатель</span></td><td>Шанс x% заспавнить Искателя</td><td class="num">180</td><td>20 м</td><td>Направляется к ближайшей цели и наносит урон.</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/dc/T_TooltipIcon_Punch.png" class="wi1" alt="Psionic"></td><td><span style="color:var(--psionic)">Психический удар</span></td><td>Шанс x% Психического удара</td><td class="num">160+110</td><td>6 м</td><td>Отбрасывает, +110 если цель ударяется об объект</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/58/T_TooltipIcon_Slam.png" class="wi1" alt="Psionic"></td><td><span style="color:var(--psionic)">Телекинетический удар</span></td><td>Шанс x% Телекинетического удара</td><td class="num">40+80</td><td>5 м</td><td>Поднимает и бросает о землю</td></tr>
+		<tr><td><img src="https://i127.fastpic.org/big/2026/0303/1e/4bbd1ac7487909cf9b45b240434b141e.png" class="wi1" alt="radio"></td><td><span style="color:var(--radio)">Атомная сверхновая</span></td><td>Шанс x% Сверхновой</td><td class="num">225</td><td>10 м</td><td>АоЕ волна, исходящая от игрока, накладывает облучение.</td></tr>
+        <tr><td><img src="https://i127.fastpic.org/big/2026/0303/d3/fa279328442c7e8982d41ecc0a476ad3.png" class="wi1" alt="radio"></td><td><span style="color:var(--radio)">Гамма-луч</span></td><td>Шанс x% гамма-луча</td><td class="num">18х10</td><td>30 м</td><td>Испускает луч радиации по направлению прицела</td></tr>
+		
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Шанс прока основного оружия (по редкости)</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Оружие</th><th class="num"><span style="color:var(--items)">Необычное</span></th><th class="num">Редкое</th><th class="num"><span style="color:var(--epic)">Эпическое</span></th><th class="num"><span style="color:var(--radio)">Легендарное</span></th></tr></thead>
+      <tbody>
+        <tr><td>AR-70 Vanguard</td><td class="num">3.7%</td><td class="num">4.1%</td><td class="num">4.6%</td><td class="num">5%</td></tr>
+        <tr><td>Ion Driver</td><td class="num">33.7%</td><td class="num">37.5%</td><td class="num">41.3%</td><td class="num">45.1%</td></tr>
+        <tr><td>HK-44 Warrior</td><td class="num">4.2%</td><td class="num">4.6%</td><td class="num">5.1%</td><td class="num">5.6%</td></tr>
+        <tr><td>HK-92 Warbringer</td><td class="num">6.1%</td><td class="num">6.8%</td><td class="num">7.5%</td><td class="num">8.2%</td></tr>
+        <tr><td>HR6C Juggernaut<h2 id="generic-affixes1"></h2></td><td class="num">4.9%</td><td class="num">5.5%</td><td class="num">6.1%</td><td class="num">6.6%</td></tr>
+        <tr><td>M-100 Crosspoint</td><td class="num">45%</td><td class="num">50%</td><td class="num">55%</td><td class="num">60%</td></tr>
+        <tr><td>M-150 Headhunter</td><td class="num">45%</td><td class="num">50%</td><td class="num">55%</td><td class="num">60%</td></tr>
+        <tr><td>MP18-L Revenant</td><td class="num">11.2%</td><td class="num">12.5%</td><td class="num">13.8%</td><td class="num">15.1%</td></tr>
+        <tr><td>Plasma Cycler</td><td class="num">2.6%</td><td class="num">2.8%</td><td class="num">3%</td><td class="num">3.2%</td></tr>
+        <tr><td>T30 Nova Burst</td><td class="num">1.8%</td><td class="num">2%</td><td class="num">2.2%</td><td class="num">2.4%</td></tr>
+        <tr><td>Titan-10 Hellstorm</td><td class="num">2.2%</td><td class="num">2.5%</td><td class="num">2.8%</td><td class="num">3%</td></tr>
+        <tr><td>VLR-72 Tempest</td><td class="num">5.5%</td><td class="num">6.1%</td><td class="num">6.7%</td><td class="num">7.3%</td></tr>
+        <tr><td>VLR Arcblade</td><td class="num">3.3%</td><td class="num">3.6%</td><td class="num">4%</td><td class="num">4.3%</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ОБЩИЕ АФФИКСЫ -->
+  <section id="generic-affixes">
+    <div class="section-title"><span class="icon">🌟</span> Общие аффиксы оружия</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th>Эффект</th><th class="num">Редкое</th><th class="num"><span style="color:var(--epic)">Эпическое</span></th><th class="num"><span style="color:var(--radio)">Легендарное</span></th></tr></thead>
+      <tbody>
+        <tr><td>Урон в прицеле</td><td>+x% урона при прицеливании</td><td class="num">10%</td><td class="num">20%</td><td class="num">30%</td></tr>
+        <tr><td>Последовательные выстрелы</td><td>+x% урона за каждое подряд попадание (макс. 50%)</td><td class="num">5%</td><td class="num">10%</td><td class="num">15%</td></tr>
+        <tr><td>Шанс крита</td><td>+x% к шансу критического удара</td><td class="num">10%</td><td class="num">15%</td><td class="num">20%</td></tr>
+        <tr><td>Урон крита</td><td>+x% к урону критического удара</td><td class="num">15%</td><td class="num">20%</td><td class="num">25%</td></tr>
+        <tr><td>Урон по дебаффам</td><td>+x% урона по врагам со стихийными дебаффами</td><td class="num">10%</td><td class="num">15%</td><td class="num">20%</td></tr>
+        <tr><td>Стихийный урон</td><td>+x% стихийного урона оружия</td><td class="num">15%</td><td class="num">20%</td><td class="num">25%</td></tr>
+        <tr><td>Урон на дальнем расстоянии</td><td>+x% урона по врагам дальше 10 м</td><td class="num">20%</td><td class="num">30%</td><td class="num">40%</td></tr>
+        <tr><td>Скорость стрельбы</td><td>+x% к скорости стрельбы</td><td class="num">10%</td><td class="num">15%</td><td class="num">20%</td></tr>
+        <tr><td>Первый выстрел</td><td>Первый патрон из магазина наносит +x% урона</td><td class="num">30%</td><td class="num">40%</td><td class="num">50%</td></tr>
+        <tr><td>Урон с бедра</td><td>+x% урона при стрельбе без прицела</td><td class="num">10%</td><td class="num">20%</td><td class="num">30%</td></tr>
+        <tr><td>Последний патрон</td><td>Последний патрон из магазина наносит +x% урона</td><td class="num">50%</td><td class="num">75%</td><td class="num">100%</td></tr>
+        <tr><td>Размер магазина</td><td>+x% к ёмкости магазина</td><td class="num">30%</td><td class="num">40%</td><td class="num">50%</td></tr>
+        <tr><td>Урон по помеченным</td><td>Помеченные враги получают на 50% больше урона</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+        <tr><td>Урон вблизи</td><td>+x% урона по врагам в радиусе 10 м</td><td class="num">15%</td><td class="num">25%</td><td class="num">35%</td></tr>
+        <tr><td>Пассивная перезарядка</td><td>Убийство врага перезаряжает незаряженное оружие</td><td class="num">—</td><td class="num">—</td><td class="num">—</td></tr>
+        <tr><td>Шанс прока</td><td>+x% к шансу стихийного прока</td><td class="num">10%</td><td class="num">15%</td><td class="num">20%</td></tr>
+        <tr><td>Урон по слабым местам</td><td>+x% к урону по слабым местам</td><td class="num">15%</td><td class="num">20%</td><td class="num">25%</td></tr>
+        <tr><td>Скорость перезарядки</td><td>+x% к скорости перезарядки</td><td class="num">20%</td><td class="num">25%</td><td class="num">30%</td></tr>
+        <tr><td>Урон в оптике<h2 id="proc-affixes1"></h2></td><td>+x% урона в полном прицеле</td><td class="num">10%</td><td class="num">15%</td><td class="num">20%</td></tr>
+        <tr><td>Урон за металлолом</td><td>+x% за каждые 500 ед. <img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap"> (макс. 20%)</td><td class="num">1%</td><td class="num">2.5%</td><td class="num">5%</td></tr>
+        <tr><td>Поглощение щита</td><td>x% шанс восстановить 5% щита при нанесении урона</td><td class="num">30%</td><td class="num">40%</td><td class="num">50%</td></tr>
+        <tr><td>Измельчитель</td><td>+x% урона за каждую поражённую цель</td><td class="num">?</td><td class="num">20%</td><td class="num">?</td></tr>
+        <tr><td>Снижение разброса</td><td>-x% к разбросу пуль</td><td class="num">20%</td><td class="num">30%</td><td class="num">40%</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Бонус урона от уровня оружия</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Уровень</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr></thead>
+      <tbody><tr><td>Бонус урона</td><td>—</td><td>+10%</td><td>+20%</td><td>+30%</td><td>+40%</td><td>+50%</td><td>+60%</td><td>+70%</td><td>+80%</td><td>+90%</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <!-- АФФИКСЫ ПРОКОВ -->
+  <section id="proc-affixes">
+    <div class="section-title"><span class="icon">🎲</span> <h2 id="armor1"></h2>Аффиксы проков оружия</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">В отличие от общих, шанс прока (x%) у каждого оружия свой.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th>Эффект</th></tr></thead>
+      <tbody>
+        <tr><td>Возврат боеприпасов</td><td>x% шанс вернуть 10% магазина при попадании</td></tr>
+        <tr><td>Возврат патрона</td><td>x% шанс вернуть патрон при попадании</td></tr>
+        <tr><td>Двойной выстрел</td><td>x% шанс удвоить выстрел (двойной урон)</td></tr>
+        <tr><td>Пометить врага</td><td>x% шанс пометить цель (+50% урон 5 с)</td></tr>
+        <tr><td>Кровопийца</td><td>x% шанс восстановить 5% макс. HP при попадании</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- БРОНЯ -->
+  <section id="armor">
+    <div class="section-title"><span class="icon">🧱</span> Броня</div>
+    <div class="subsection-title">Рейтинг брони по уровню</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Уровень</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th></tr></thead>
+      <tbody><tr><td>Рейтинг брони</td><td class="num">75</td><td class="num">150</td><td class="num">225</td><td class="num">300</td><td class="num">375</td><td class="num">450</td><td class="num">525</td><td class="num">600</td><td class="num">675</td><td class="num">750</td></tr></tbody>
+    </table></div>
+    <div class="card" style="margin-top:10px;font-size:12px;">
+      <p style="font-size:14px;"><em>Броня даёт убывающую отдачу по снижению урона (DR), но нарастающую по эффективному HP.</em></p>
+      <ul style="margin-top:8px;">
+        <li>150 брони = 1.56% снижение урона</li>
+        <li>2 150 брони = 18.77% снижение урона</li>
+        <li>3 000 брони = 25% снижение урона</li>
+        <li>Снижение урона перемножается с другими источниками (например, 80% DR от аугмента + 30% DR от брони = 86% DR).</li>
+      </ul>
+    </div>
+
+    <div class="subsection-title">Свойства брони (по редкости)</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Свойство</th><th><span style="color:var(--items)">Необычное</span></th><th class="num">Редкое</th><th><span style="color:var(--epic)">Эпическое</span></th><th><span style="color:var(--radio)">Легендарное</span></th></tr></thead>
+	  
+      <tbody>
+        <tr><td>Рейтинг брони</td><td>—</td><td>+12.2–14.9%</td><td>+15–16.9%</td><td>+18.1–19.5%</td></tr>
+        <tr><td>Шанс крит. удара</td><td>—</td><td>+9.2–11.9%</td><td>+13.2–15.8%</td><td>+17.4–18.9%</td></tr>
+        <tr><td>Урон крит. удара</td><td>—</td><td>+7–8.6%</td><td>+10.2–11.7%</td><td>+13.2–14.8%</td></tr>
+        <tr><td>Сокращение кулдауна рывка<h2 id="items-al1"></h2></td><td>—</td><td>+4.3–5.4%</td><td>+6.1–7.9%</td><td>9.4%</td></tr>
+        <tr><td>Стихийный урон</td><td>—</td><td>+10.5–11.8%</td><td>+13–14.8%</td><td>+16.6–17.9%</td></tr>
+        <tr><td>Шанс стихийного прока</td><td>—</td><td>+5.0–7.8%</td><td>+9.7–11.8%</td><td>+13.4–15.4%</td></tr>
+        <tr><td>Макс. здоровье</td><td>+4–7</td><td>+12–15</td><td>+20–23</td><td>+28–31</td></tr>
+        <tr><td>Макс. щит</td><td>+1–2</td><td>+3–5</td><td>+5–8</td><td>+7–11</td></tr>
+        <tr><td>Скорость движения</td><td>—</td><td>+11.1–14.9%</td><td>+16.1–19.9%</td><td>+22–26.1%</td></tr>
+        <tr><td>Кулдаун гранаты</td><td>—</td><td>–0.8–0.9 с</td><td>–1.1–1.2 с</td><td>–1.5 с</td></tr>
+        <tr><td>Улучшение щита</td><td>—</td><td>+8–10.8%</td><td>+12.4–14.9%</td><td>+16.8–17.7%</td></tr>
+        <tr><td>Урон по слабым местам</td><td>—</td><td>+15.2–17.8%</td><td>+19.1–22.9%</td><td>+24–26.9%</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ПРЕДМЕТЫ А-Л -->
+  <section id="items-al">
+    <div class="section-title"><span class="icon">🎒</span> Предметы А–Л</div>
+    <div class="card-grid">
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/b/b3/T_PerkIcon_DashBoostsMoveSpeed.png" class="wi1" alt=""> Afterburners — Форсажные камеры</h4><span class="rarity rarity-rare">Редкий</span><p>+100% скорость движения на 1 с после рывка.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/4/4c/T_PerkIcon_DamageToFullHealthEnemies.png" class="wi1" alt=""> AI Chipset — ИИ-чипсет</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+35% / +70% урона по врагам с полным здоровьем.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/18/T_PerkIcon_ScrapAmmo.png" class="wi1" alt=""> Ammo Auto-Factory — Авто-фабрика патронов</h4><span class="rarity rarity-rare">Редкий</span><p>Подбор <img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap"> пополняет боеприпасы.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/f/f0/T_PerkIcon_NearbyEnemyDamage.png" class="wi1" alt=""> Android Eye — Глаз андроида</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+25% / +50% урона по ближним врагам.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/3/30/T_PerkIcon_ExplosionRadius.png" class="wi1" alt=""> Area Detonator — Детонатор области</h4><span class="rarity rarity-rare">Редкий</span><p>+20% к радиусу взрыва гранаты.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/0/01/T_PerkIcon_HealthOrbRestoreShield.png" class="wi1" alt=""> Backup Battery — Запасной аккумулятор</h4><span class="rarity rarity-rare">Редкий</span><p>Аптечки восстанавливают 20% щита.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/b/b8/T_PerkIcon_WeakpointDamageBoost.png" class="wi1" alt=""> Ballistic Helmet — Баллистический шлем</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+25% / +50% урон по слабым местам.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/0/06/T_PerkIcon_GrenadeSingleTargetBonusDamage.png" class="wi1" alt=""> Barbed Grenade — Шипастая граната</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+50% / +100% урон гранаты по одной цели.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/6f/T_PerkIcon_BoostWeaponProcChanceAfterAbility.png" class="wi1" alt=""> Bio Gel — Биогель</h4><span class="rarity rarity-rare">Редкий</span><p>+40% шанс прока на 4 с после броска гранаты.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/f/f0/T_PerkIcon_ExplosionDamage.png" class="wi1" alt=""> Blast Enhancer — Усилитель взрыва</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+20% / +40% урон гранат.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/c/cb/T_PerkIcon_OrbHealing.png" class="wi1" alt=""> Bloodbags — Мешки с кровью</h4><span class="rarity rarity-rare">Редкий</span><p>+50% к лечению от аптечек.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/a/a7/T_PerkIcon_RestoreBulletsOnDistanceTraveled.png" class="wi1" alt=""> Brass Boot — Медный ботинок</h4><span class="rarity rarity-rare">Редкий</span><p>Восстанавливает +2 патрона за каждые 5 метров пройденного пути.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/64/T_PerkIcon_ClawHammer.png" class="wi1" alt=""> Claw Hammer — Гвоздодёр</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+30% / +60% урона при попадании не в Уязвимость.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/8/8c/T_PerkIcon_DamageToLieutenants.png" class="wi1" alt=""> Command Trophy — Трофей командира</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+25% / +50% урона по элитным врагам.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/b/b7/T_PerkIcon_GrenadeKillRestoresAmmo.png" class="wi1" alt=""> Confetti Popper — Хлопушка</h4><span class="rarity rarity-rare">Редкий</span><p>Убийства гранатой пополняют 30% боеприпасов.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/e/e0/T_PerkIcon_ScrapDrop.png" class="wi1" alt=""> Credit Slate — Кредитный планшет</h4><span class="rarity rarity-rare">Редкий</span><p>+50% к выпадаемому <img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap">.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/e/e2/T_PerkIcon_DamageReductionAfterReload.png" class="wi1" alt=""> Elbow Pads — Налокотники</h4><span class="rarity rarity-rare">Редкий</span><p>+25% скорость перезарядки. +25% сопротивление урону на 3 с после перезарядки.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/f/f9/T_PerkIcon_KillingDebuffedEnemy_BoostsElementDamage.png" class="wi1" alt=""> Elemental Attenuator — Стихийный аттенюатор</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+5% / +10% стихийного урона за убийство цели с дебаффом (макс. 50% / 100%), 10 с.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/7/7f/T_PerkIcon_EnergyDamage.png" class="wi1" alt=""> Elemental Catalyst — Стихийный катализатор</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+15% / +30% урона за каждый стихийный дебафф на цели.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/7/7f/T_PerkIcon_ElementalReactor.png" class="wi1" alt=""> Elemental Reactor — Стихийный реактор</h4><span class="rarity rarity-rare">Редкий</span><p>+100% шанс оглушения при наложении нового стихийного дебаффа на уже дебаффованного врага.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/0/08/T_PerkIcon_SpeedBoostNearEnemies.png" class="wi1" alt=""> Energy Drink — Энергетик</h4><span class="rarity rarity-rare">Редкий</span><p>+20% скорость движения за каждого ближнего врага (макс. 100%).</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/12/T_PerkIcon_SwapBoostsFireRate.png" class="wi1" alt=""> Enhanced Holster — Улучшенная кобура</h4><span class="rarity rarity-rare">Редкий</span><p>+30% скорость стрельбы на 5 с после смены оружия.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/5/53/T_PerkIcon_DiscountOnFirstWeaponPurchase.png" class="wi1" alt=""> Expired Coupon — Просроченный купон</h4><span class="rarity rarity-rare">Редкий</span><p>100% скидка на первую покупку оружия на каждом Фабрикаторе.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/3/31/T_PerkIcon_FarEnemyDamageMitigation.png" class="wi1" alt=""> Field Generator — Полевой генератор</h4><span class="rarity rarity-rare">Редкий</span><p>+20% сопротивление урону от врагов дальше 10 м.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/f/f9/T_PerkIcon_ExtraMaxHealth.png" class="wi1" alt=""> Food Pyramid — Пирамида питания</h4><span class="rarity rarity-rare">Редкий</span><p>+20% к максимальному здоровью.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/4/42/T_PerkIcon_FirstShotDamage.png" class="wi1" alt=""> Front Load — Начальный заряд</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+40% / +80% урон первого патрона из магазина.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/2/24/T_PerkIcon_ProcChanceBoostForCloseRange.png" class="wi1" alt=""> Glow Sticks — Световые палочки</h4><span class="rarity rarity-rare">Редкий</span><p>+30% шанс прока по ближним врагам.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/5/51/T_PerkIcon_KilledEnemiesSpreadDebuffs.png" class="wi1" alt=""> Hair Dryer — Фен</h4><span class="rarity rarity-rare">Редкий</span><p>Враги распространяют стихийные дебаффы в радиусе 8 м при смерти.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/e/e2/T_PerkIcon_ExtraQualityUpgrade.png" class="wi1" alt=""> Hammer of Artisan's Forge — Молот кузнеца</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+1 / +2 улучшения качества оружия на Фабрикаторе.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/3/36/T_PerkIcon_KillsReduceReload.png" class="wi1" alt=""> Hand Lotion — Крем для рук</h4><span class="rarity rarity-rare">Редкий</span><p>+5% скорость перезарядки за убийство (макс. 30%), сбрасывается при перезарядке.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/f/f1/T_PerkIcon_SlowDescentBoostAirborneDamage.png" class="wi1" alt=""> Helium Canister — Баллон с гелием</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p><h2 id="items-mz1"></h2>+20% / +40% урона в воздухе. Удерживайте прыжок для замедления падения.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/7/72/T_PerkIcon_LastShotsPlusCrit.png" class="wi1" alt=""> Hero Mask — Маска героя</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+30% / +60% шанс крита при магазине менее 50%.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/b/b7/T_PerkIcon_ExtraMaxShield.png" class="wi1" alt=""> Hull Plating — Корпусная броня</h4><span class="rarity rarity-rare">Редкий</span><p>+20% к щиту.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/60/T_PerkIcon_MeleeKillExecutesOtherWeakEnemies.png" class="wi1" alt=""> Irradiated Sample — Облучённый образец</h4><span class="rarity rarity-rare">Редкий</span><p>Атаки в ближнем бою оглушают врагов.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/64/T_PerkIcon_ElementalDebuffPotency.png" class="wi1" alt=""> Kaleidoscope — Калейдоскоп</h4><span class="rarity rarity-rare">Редкий</span><p>Стихийные дебаффы вдвое мощнее.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/19/T_PerkIcon_DamageToMeleeEnemies.png" class="wi1" alt=""> Knuckle Dusters — Кастет</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+35% / +70% урона по врагам ближнего боя.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/66/T_PerkIcon_FullShieldGiveResistance.png" class="wi1" alt=""> Lava Lamp — Лавовая лампа</h4><span class="rarity rarity-rare">Редкий</span><p>+30% сопротивление урону к следующему удару после 3 с с полным щитом.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/d/d0/T_PerkIcon_SwapGrantsSpeedAndDodge.png" class="wi1" alt=""> Leaf Spring — Листовая пружина</h4><span class="rarity rarity-rare">Редкий</span><p>+20% скорость движения и уклонения на 2 с после смены оружия.</p></div>
+    </div>
+  </section>
+
+  <!-- ПРЕДМЕТЫ М-Я -->
+  <section id="items-mz">
+    <div class="section-title"><span class="icon">🎒</span> Предметы М–Я</div>
+    <div class="card-grid">
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/3/32/T_PerkIcon_MagazineSize.png" class="wi1" alt=""> Mag Clip — Зажим магазина</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+50% / +100% к ёмкости магазина (минимум +1).</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/c/c7/T_PerkIcon_PickupRange.png" class="wi1" alt=""> Magnetic Disc — Магнитный диск</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+100% радиус подбора. +3% / +6% урона за каждый подобранный на 5 с (макс. 30% / 60%).</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/16/T_PerkIcon_IncreaseSwapSpeed.png" class="wi1" alt=""> Magnetized Gauntlet — Магнитная перчатка</h4><span class="rarity rarity-rare">Редкий</span><p>+100% скорость смены оружия.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/4/4a/T_PerkIcon_FarEnemyDamage.png" class="wi1" alt=""> Magnifying Lens — Увеличительная линза</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+30% / +60% урона по врагам дальше 10 м.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/9/94/T_PerkIcon_ElementalDebuffsCauseDot.png" class="wi1" alt=""> Meteorite Shard — Осколок метеорита</h4><span class="rarity rarity-rare">Редкий</span><p>Стихийные дебаффы наносят урон в секунду.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/6f/T_PerkIcon_ADSSpeed.png" class="wi1" alt=""> Monocle — Монокль</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+20% / +40% урона и +35% скорость движения при прицеливании.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/e/e5/T_PerkIcon_DamageWhileAtFullHealth.png" class="wi1" alt=""> Multi-Vitamins — Мультивитамины</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+25% / +50% урона при полном здоровье.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/d/d7/T_PerkIcon_ReloadBoostsFireRate.png" class="wi1" alt=""> Overclocked Core — Разогнанное ядро</h4><span class="rarity rarity-rare">Редкий</span><p>+50% скорость стрельбы на 3 с после перезарядки.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/e/eb/T_PerkIcon_ElementalDamageSynergy_Damage.png" class="wi1" alt=""> Pesticide Spray — Пестицид</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+25% / +50% стихийного урона по врагам с другим стихийным дебаффом.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/d/d7/T_PerkIcon_DamageBoostWhenKillEnemy.png" class="wi1" alt=""> Pet Leash — Поводок</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+15% / +30% урона на 3 с после убийства врага.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/64/T_PerkIcon_ReflectDamage.png" class="wi1" alt=""> Photon Padding — Фотонная подкладка</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>Отражает 200% / 400% полученного урона обратно атакующему.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/a/a8/T_PerkIcon_IncreaseCritDamage_DecreaseNonCritDamage.png" class="wi1" alt=""> Plastic Wand — Пластиковый жезл</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+20% / +40% к урону критического удара.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/6d/T_PerkIcon_IncreasedBarrelDamage.png" class="wi1" alt=""> Powder Keg — Пороховая бочка</h4><span class="rarity rarity-rare">Редкий</span><p>+100% урона от взрывающихся бочек.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/9/91/T_PerkIcon_ProcChanceIncrease.png" class="wi1" alt=""> Power Bank — Пауэрбанк</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+30% / +60% к шансу прока.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/5/5c/T_PerkIcon_DamageToRangedEnemies.png" class="wi1" alt=""> Precision Disruptor — Точный подавитель</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+35% / +70% урона по врагам дальнего боя.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/3/3e/T_PerkIcon_FreeReroll.png" class="wi1" alt=""> Probability Cube — Куб вероятности</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+1 / +2 переброска аффиксов на Фабрикаторе.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/16/T_PerkIcon_EmptyMagFasterReload.png" class="wi1" alt=""> Quickload Adapter — Адаптер быстрой зарядки</h4><span class="rarity rarity-rare">Редкий</span><p>+50% скорость перезарядки при пустом магазине.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/5/52/T_PerkIcon_CollectLootOnWeakpointKill.png" class="wi1" alt=""> Remote Gatherer — Дистанционный сборщик</h4><span class="rarity rarity-rare">Редкий</span><p>+20% к выпадению <img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap">. Автоматически подбирает весь лут.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/b/bb/T_PerkIcon_HipfireReduceSpread.png" class="wi1" alt=""> Rubber Band — Резиновая лента</h4><span class="rarity rarity-rare">Редкий</span><p>–40% к разбросу при стрельбе с бедра.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/d/d2/T_PerkIcon_MeleeKill_ReloadEquipWeapon.png" class="wi1" alt=""> Safety Scissors — Ножницы безопасности</h4><span class="rarity rarity-rare">Редкий</span><p>Убийства в ближнем бою перезаряжают оружие.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/a/a2/T_PerkIcon_ElementalDebuffIncreasedWeakpointDamage.png" class="wi1" alt=""> Salt Shaker — Солонка</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+30% / +60% урон по слабым местам врагов со стихийным дебаффом.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/6/6d/T_PerkIcon_ResilientShield.png" class="wi1" alt=""> Shield Recovery Unit — Блок восстановления щита</h4><span class="rarity rarity-rare">Редкий</span><p>Щит восстанавливается быстрее при низком здоровье.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/3/3a/T_PerkIcon_ShieldBreakDamageImmunity.png" class="wi1" alt=""> Shock Absorber — Амортизатор</h4><span class="rarity rarity-rare">Редкий</span><p>Урон, пробивающий щит, не снижает здоровье (кулдаун 15 с).</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/f/ff/T_PerkIcon_DamageToFlyingEnemies.png" class="wi1" alt=""> Skystrike Array — Установка «Небесный удар»</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+35% / +70% урона по летающим врагам.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/0/08/T_PerkIcon_GrenadeWeakensEnemies.png" class="wi1" alt=""> Small Antenna — Маленькая антенна</h4><span class="rarity rarity-rare">Редкий</span><p>Гранаты помечают врагов (+50% урон 5 с).</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/c/c1/T_PerkIcon_DebuffCausesStagger.png" class="wi1" alt=""> Smelling Salts — Нашатырь</h4><span class="rarity rarity-rare">Редкий</span><p>+20% шанс оглушения при наложении стихийного дебаффа.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/12/T_PerkIcon_WeakpointKillsBoostNextShot.png" class="wi1" alt=""> Space Heater — Космический обогреватель</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+50% / +100% урон следующего выстрела после убийства попаданием в Уязвимость.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/2/23/T_PerkIcon_ExtraGrenadeCharge.png" class="wi1" alt=""> Spare Charge — Запасной заряд</h4><span class="rarity rarity-rare">Редкий</span><p>+1 заряд гранаты.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/2/27/T_PerkIcon_DashReload.png" class="wi1" alt=""> Sparkplug — Свеча зажигания</h4><span class="rarity rarity-rare">Редкий</span><p>Пополняет 15% боеприпасов после рывка (минимум +1).</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/4/46/T_PerkIcon_CritsReduceCooldowns.png" class="wi1" alt=""> Stim Cap — Стимулятор</h4><span class="rarity rarity-rare">Редкий</span><p>–10% к оставшемуся кулдауну рывка и гранаты при каждом крите.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/17/T_PerkIcon_FireRateReloadSpeed.png" class="wi1" alt=""> Stimulant Autoinjector — Автоинъектор стимулятора</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+20% / +40% к скорости стрельбы.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/c/cc/T_PerkIcon_ArmorValue.png" class="wi1" alt=""> T1 Armored Plate — T1 Бронеплита</h4><span class="rarity rarity-rare">Редкий</span><p>+2 000 брони.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/7/7b/T_PerkIcon_DamageToLowHealthEnemies.png" class="wi1" alt=""> Tactical Dataslate — Тактический планшет</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+30% / +60% урона по врагам с HP ниже 50%.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/e/e8/T_PerkIcon_WeakpointShotsStaggerEnemy.png" class="wi1" alt=""> Targeting Array — Прицельная система</h4><span class="rarity rarity-rare">Редкий</span><p>+20% шанс оглушения при попадании в Уязвимость. </p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/1b/T_PerkIcon_CritChance.png" class="wi1" alt=""> Targeting Goggles — Прицельные очки</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+20% / +40%<h2 id="tech1"></h2> шанс крит. удара.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/9/9a/T_PerkIcon_ElementalDamageBuff.png" class="wi1" alt=""> Tea Leaves — Чайные листья</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+30% / +60% урон от проков.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/5/54/T_PerkIcon_MoveSpeedBuffOnDamaged.png" class="wi1" alt=""> Tesla Skis — Лыжи Теслы</h4><span class="rarity rarity-rare">Редкий</span><p>+100% скорость движения на 3 с после получения урона (кулдаун 10 с).</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/4/43/T_PerkIcon_PreventDamageWhenLowHealth.png" class="wi1" alt=""> Tourniquet — Жгут</h4><span class="rarity rarity-rare">Редкий</span><p>Иммунитет к урону на 2 с при падении ниже 25% HP (кулдаун 60 с).</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/d/d6/T_PerkIcon_Item_IncreaseMeleeSwingSpeed.png" class="wi1" alt=""> Turbo Blade — Турбо-клинок</h4><span class="rarity rarity-rare">Редкий</span><p>+50% к скорости атаки в ближнем бою.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/1/11/T_PerkIcon_ReducedGrenadeCooldown.png" class="wi1" alt=""> Utility Belt — Пояс инструментов</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>–20% / –40% к кулдауну гранаты.</p></div>
+      <div class="item-card"><h4><img src="https://wiki.tribesdepot.com/images/9/9e/T_PerkIcon_DashBoostsMeleeDamage.png" class="wi1" alt=""> Wrist Vanes — Наручные лопасти</h4><span class="rarity rarity-rare">Редкий</span> /<span style="color:var(--epic)"> Эпический</span><p>+40% / +80% урон в ближнем бою на 3 с после рывка.</p></div>
+    </div>
+  </section>
+
+  <!-- ТЕХ. МАСТЕРСТВА -->
+  <section id="tech">
+    <div class="section-title"><span class="icon">🔬</span> Технологические мастерства</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Постоянные улучшения, сохраняющиеся между забегами. Стоимость: <img src="https://wiki.tribesdepot.com/images/9/9b/T_IconCurrency_Tech.png" class="wi" alt="Tech"> Tech + <img src="https://wiki.tribesdepot.com/images/7/71/T_SuperPerkComponent_Generic.png" class="wi" alt="Компоненты"> Компоненты.</p>
+
+    <div class="subsection-title">Защита</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Мастерство</th><th>T1</th><th>T5</th><th>T10</th></tr></thead>
+      <tbody>
+        <tr><td>Начальное здоровье</td><td>+20</td><td>+100</td><td>+200</td></tr>
+        <tr><td>Макс. щит</td><td>+5</td><td>+25</td><td>+50</td></tr>
+        <tr><td>Задержка восстановления щита</td><td>–1 с</td><td>–5 с</td><td>–10 с</td></tr>
+        <tr><td>Скорость восстановления щита</td><td>+200%</td><td>+1000%</td><td>+2000%</td></tr>
+        <tr><td>Частота выпадения аптечек</td><td>+100%</td><td>+500%</td><td>+1000%</td></tr>
+        <tr><td>Ценность аптечек</td><td>+20%</td><td>+100%</td><td>+200%</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title">Урон</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Мастерство</th><th>T1</th><th>T5</th><th>T10</th></tr></thead>
+      <tbody>
+        <tr><td>Урон оружием</td><td>+5%</td><td>+25%</td><td>+50%</td></tr>
+        <tr><td>Урон основного оружия</td><td>+5%</td><td>+25%</td><td>+50%</td></tr>
+        <tr><td>Урон вторичного оружия</td><td>+5%</td><td>+25%</td><td>+50%</td></tr>
+        <tr><td>Урон ближнего боя</td><td>+5%</td><td>+25%</td><td>+50%</td></tr>
+        <tr><td>Урон гранат</td><td>+10%</td><td>+50%</td><td>+100%</td></tr>
+        <tr><td>Стихийный урон</td><td>+5%</td><td>+25%</td><td>+50%</td></tr>
+        <tr><td>Шанс прока</td><td>+5%</td><td>+25%</td><td>+50%</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="subsection-title"><h2 id="superior-al1"></h2>Утилита</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Мастерство</th><th>T1</th><th>T5</th><th>T10</th></tr></thead>
+      <tbody>
+        <tr><td>Магнетизатор</td><td>+10%</td><td>+50%</td><td>+100%</td></tr>
+        <tr><td>Радиус гранат</td><td>+10%</td><td>+50%</td><td>+100%</td></tr>
+        <tr><td>Кулдаун гранаты</td><td>–5%</td><td>–25%</td><td>–50%</td></tr>
+        <tr><td>Скорость бега</td><td>+5%</td><td>+25%</td><td>+50%</td></tr>
+        <tr><td>Сбор <img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap"></td><td>+10%</td><td>+50%</td><td>+100%</td></tr>
+        <tr><td>Сбор <img src="https://wiki.tribesdepot.com/images/9/9b/T_IconCurrency_Tech.png" class="wi" alt="Tech"></td><td>+10%</td><td>+50%</td><td>+100%</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- УЛУЧШ. ПРЕДМЕТЫ А-Л -->
+  <section id="superior-al">
+    <div class="section-title"><span class="icon">💎</span> Улучшенные предметы А–Л</div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">Улучшаются за <img src="https://wiki.tribesdepot.com/images/e/e2/T_TechComponent_Generic.png" class="wi" alt="Компоненты предметов"> Компоненты предметов. Доступны с Зоны 2.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th>Эффект</th><th>T1</th><th>T3</th><th>T5</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/e/ee/T_SuperPerkIcon_IncreasedWeakpointCritDamage.png" class="wi2" alt="" > <strong style="color:var(--items)">Action Figure — Фигурка героя</strong></td><td>+x% урон крита по слабым местам.</td><td>10%</td><td>30%</td><td>50%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/3/32/T_SuperPerkIcon_MissingBulletsIncreaseDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Alien's Hand — Рука пришельца</strong></td><td>+x% урона за каждый недостающий патрон (макс. 50%).</td><td>1%</td><td>3%</td><td>5%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/8/85/T_SuperPerkIcon_FreeShotsAfterKill.png" class="wi2" alt=""> <strong style="color:var(--items)">Ammo Surplus — Избыток патронов</strong></td><td>xs без расхода боеприпасов после убийства.</td><td>1 с</td><td>2 с</td><td>3 с</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/6e/T_SuperPerkIcon_HealthOrbGrantsImmunity.png" class="wi2" alt=""> <strong style="color:var(--items)">Artificial Heart — Искусственное сердце</strong></td><td>Иммунитет к урону на xs после подбора аптечки.</td><td>1 с</td><td>2 с</td><td>3 с</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/6/65/T_PerkIcon_ElementPrimaryToMelee.png" class="wi2" alt=""> <strong style="color:var(--items)">Automatic Gunblade — Авто штык-нож</strong></td><td>Атаки ближнего боя прокают стихию основного оружия с x% вероятностью.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/d8/T_SuperPerkIcon_KillsGrantDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Blood Vial — Фляга с кровью</strong></td><td>+x% урона за каждое убийство (сбрасывается при смерти, макс. 50%).</td><td>0.1%</td><td>0.3%</td><td>0.5%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/a/af/T_SuperPerkIcon_GrenadeDoubleDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Bolas — Бола</strong></td><td>x% шанс нанести 100% урона гранатой.</td><td>10%</td><td>30%</td><td>50%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/d8/T_SuperPerkIcon_MissedShotAmmoRefund.png" class="wi2" alt=""> <strong style="color:var(--items)">Boomerang — Бумеранг</strong></td><td>x% шанс, что промах не тратит патрон.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/3/30/T_PerkIcon_GrenadeSecondExplosion.png" class="wi2" alt=""> <strong style="color:var(--items)">Cherry Bomb — Петарда</strong></td><td>x% шанс, что граната взорвётся дважды.</td><td>7%</td><td>21%</td><td>35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/99/T_PerkIcon_ElementMeleeToSecondary.png" class="wi2" alt=""> <strong style="color:var(--items)">Compact Bayonet — Компактный штык</strong></td><td>Вторичное оружие прокает стихию оружия ближнего боя с x% вероятностью.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/3/33/T_SuperPerkIcon_ConsecutiveWeakpoints.png" class="wi2" alt=""> <strong style="color:var(--items)">Dunce Cap — Колпак дурака</strong></td><td>+x% урона за каждое подряд попадание в Уязвимость (макс. 50%), сбрасывается при промахе.</td><td>2%</td><td>6%</td><td>10%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/0/02/T_SuperPerkIcon_ShieldBoostsGrenadeDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Energy Diverter — Отводчик энергии</strong></td><td>Граната потребляет 25% щита, +x% урона за каждые 2 единицы щита (макс. 50%).</td><td>1%</td><td>2%</td><td>3%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/8/81/T_PerkIcon_ElementSecondaryToMelee.png" class="wi2" alt=""> <strong style="color:var(--items)">Gunblade — Штык-нож</strong></td><td>Оружие ближнего боя прокает стихию вторичного оружия с x% вероятностью.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/b/b6/T_SuperPerkIcon_KillsGrantBarrier.png" class="wi2" alt=""> <strong style="color:var(--items)">Handheld Vacuum — Ручной пылесос</strong></td><td>Убийства создают барьер = x% щита (убывает на 4/с).</td><td>2%</td><td>6%</td><td>10%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/e/e4/T_PerkIcon_PlasmaOrbGenerator.png" class="wi2" alt=""> <strong style="color:var(--items)">Heat Coil — Тепловая катушка</strong></td><td>x% снижение урона от следующего удара (кулдаун 30 с).</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/f/f8/T_SuperPerkIcon_DamageBoostPerMissingHealth.png" class="wi2" alt=""> <strong style="color:var(--items)">Hot Sauce — Острый соус</strong></td><td>+x% урона за каждую единицу отсутствующего здоровья.</td><td>0.2%</td><td>0.6%</td><td>1%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/50/T_SuperPerkIcon_GrenadeDamageToHealthyEnemies.png" class="wi2" alt=""> <strong style="color:var(--items)">Impact Fuze — Ударный взрыватель</strong></td><td>+x% урон гранаты по врагам с HP выше 70%.</td><td>15%</td><td>25%</td><td>35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/7e/T_PerkIcon_DelayedShotBonus.png" class="wi2" alt=""> <strong style="color:var(--items)">Inhaler — Ингалятор</strong></td><td>+x% урона в прицеле, если не стрелял 1 с.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/d/db/T_SuperPerkIcon_IncreasedProcChanceAndDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Juice Box — Сок в коробке</strong></td><td>+20% шанс прока по целям с HP &lt;50%. +x% урон проков.</td><td>10%</td><td>30%</td><td>50%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/1/13/T_PerkIcon_ElementMeleeToPrimary.png" class="wi2" alt=""> <strong style="color:var(--items)">Large Bayonet — Большой штык</strong></td><td>Основное оружие прокает стихию оружия ближнего боя с x% вероятностью.</td><td>20%</td><td>60%</td><td>100%<h2 id="superior-mz1"></h2></td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/8/8d/T_PerkIcon_MarkNearbyEnemiesOnKill.png" class="wi2" alt=""> <strong style="color:var(--items)">Laser Pointer — Лазерная указка</strong></td><td>x% шанс пометить врагов в радиусе 10 м от убитого (+50% урон 5 с).</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/c5/T_SuperPerkIcon_DebuffConfettiExplosion.png" class="wi2" alt=""> <strong style="color:var(--items)">Laughing Gas — Веселящий газ</strong></td><td>Враги со стихийным дебаффом с x% шансом взрываются при смерти (оглушение 8 м).</td><td>15%</td><td>25%</td><td>35%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/9a/T_SuperPerkIcon_GetAmmoWhenApplyingElementalEffect.png" class="wi2" alt=""> <strong style="color:var(--items)">Liquid Oxidizer — Жидкий окислитель</strong></td><td>x% шанс пополнить 20% боеприпасов при проке стихии (минимум +1).</td><td>10%</td><td>30%</td><td>50%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/e/e4/T_SuperPerkIcon_IncreasedFirstWeakpointDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Lobotomy Kit — Набор для лоботомии</strong></td><td>Первое попадание в Уязвимость каждого врага наносит +x% урона.</td><td>15%</td><td>45%</td><td>75%</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- УЛУЧШ. ПРЕДМЕТЫ М-Я -->
+  <section id="superior-mz">
+    <div class="section-title"><span class="icon">💎</span> Улучшенные предметы М–Я</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Название</th><th>Эффект</th><th>T1</th><th>T3</th><th>T5</th></tr></thead>
+      <tbody>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/8/8a/T_SuperPerkIcon_ProcTriggersAdditionalDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Mark of the Prophecy — Метка пророчества</strong></td><td>Прок: +x% урон следующего прока в течение 3 с.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/8/81/T_PerkIcon_SmartRocket.png" class="wi2" alt=""> <strong style="color:var(--items)">Model Rocket — Идеальная ракета</strong></td><td>Выстрел умной ракетой каждые xs (наследует качества гранаты).</td><td>18 с</td><td>12 с</td><td>6 с</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/e/e6/T_SuperPerkIcon_Nitroglycerin-Powder.png" class="wi2" alt=""> <strong style="color:var(--items)">Nitroglycerin Powder — Нитроглицерин</strong></td><td>+x% урона на 2 с после перезарядки за каждый перезаряженный патрон (макс. 100%).</td><td>0.4%</td><td>1.2%</td><td>2%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/7/77/T_SuperPerkIcon_GrenadeProcWeapons.png" class="wi2" alt=""> <strong style="color:var(--items)">Oil Diffuser — Распылитель масла</strong></td><td>Гранаты прокают стихии всех 3 слотов оружия с x% вероятностью.</td><td>10%</td><td>30%</td><td>50%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/0/06/T_SuperPerkIcon_ExitStealthBonuses.png" class="wi2" alt=""> <strong style="color:var(--items)">Phase Booster — Фазовый ускоритель</strong></td><td>+30% урона и +15% скорость движения на xs после выхода из невидимости.</td><td>1 с</td><td>3 с</td><td>5 с</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/9/98/T_PerkIcon_ElementSecondaryToPrimary.png" class="wi2" alt=""> <strong style="color:var(--items)">Pistol Charm — Талисман: пистолет</strong></td><td>Основное оружие прокает стихию вторичного оружия с x% вероятностью.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/b/b6/T_SuperPerkIcon_DamageBoostPerEnemyWithElementalDebuff.png" class="wi2" alt=""> <strong style="color:var(--items)">Pop Toaster — Тостер</strong></td><td>+x% урона за каждого врага со стихией активного оружия (макс. 50%).</td><td>2%</td><td>6%</td><td>10%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/4/45/T_SuperPerkIcon_KillstreakGrantsSmartBullets.png" class="wi2" alt=""> <strong style="color:var(--items)">Preserved Brainstem — Консервированный мозг</strong></td><td>4 убийства за 3 с → Умные пули на xs (кулдаун 4 с).</td><td>1 с</td><td>2 с</td><td>3 с</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/50/T_SuperPerkIcon_ConsecutiveCritDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Rabbit Foot — Кроличья лапка</strong></td><td>После 2 критов подряд следующий выстрел наносит +x% урона.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/21/T_SuperPerkIcon_AmmoRefundDamageIncrease.png" class="wi2" alt=""> <strong style="color:var(--items)">Recycled Plastic — Переработанный пластик</strong></td><td>10% шанс возврата патрона. +5% урона за каждый возвращённый патрон (макс. x%, сбрасывается).</td><td>10%</td><td>30%</td><td>50%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/5/52/T_PerkIcon_ElementPrimaryToSecondary.png" class="wi2" alt=""> <strong style="color:var(--items)">Rifle Charm — Талисман: винтовка</strong></td><td>Вторичное оружие прокает стихию основного оружия с x% вероятностью.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/c2/T_PerkIcon_CritsBoostCritDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Space Whiskey — Космовиски</strong></td><td>+x% урон крита на 2 с после каждого крита.</td><td>8%</td><td>24%</td><td>40%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/8/85/T_SuperPerkIcon_HealthBasedDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Steroid Tablets — Стероиды</strong></td><td>+x% урона за каждый процент текущего здоровья.</td><td>0.1%</td><td>0.3%</td><td>0.5%<h2 id="syn-augments1"></h2></td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/c2/T_SuperPerkIcon_OverhealingRestoresShields.png" class="wi2" alt=""> <strong style="color:var(--items)">Super Sample — Супер-образец</strong></td><td>x% лечения переходит в щит при полном здоровье.</td><td>20%</td><td>60%</td><td>100%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/c/c3/T_SuperPerkIcon_ExcessCritChanceDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Tip Jar — Банка с чаевыми</strong></td><td>Шанс крита сверх 100% увеличивает урон крита на сверхзначение (макс. x%).</td><td>10%</td><td>30%</td><td>50%</td></tr>
+        <tr><td><img src="https://wiki.tribesdepot.com/images/2/27/T_SuperPerkIcon_KillRestoresBullet_NotKillBoostsDamage.png" class="wi2" alt=""> <strong style="color:var(--items)">Zen Garden — Сад камней</strong></td><td>Убийства возвращают 1 патрон. Несмертельные выстрелы: +x% урон следующего выстрела (кулдаун 2 с).</td><td>10%</td><td>30%</td><td>50%</td></tr>
+      </tbody>
+    </table></div>
+    <div class="card" style="margin-top:12px;font-size:14px;">
+      <strong>Стоимость улучшения (<img src="https://wiki.tribesdepot.com/images/e/e2/T_TechComponent_Generic.png" class="wi" alt="Компоненты предметов">):</strong> T2: 2 · T3: +3 (итого 5) · T4: +4 (итого 9) · T5: +5 (итого 14)
+    </div>
+  </section>
+
+  <!-- СИНЕРГИИ: АУГМЕНТЫ -->
+  <section id="syn-augments">
+    <div class="section-title"><span class="icon">🔗</span> Синергии: Аугменты</div>
+    <div class="syn-grid">
+      <div class="synergy-card"><h4>Scopebreaker Halo — Ореол слома прицела</h4><div class="effect">В прицеле: каждый крит даёт +10% заряда. При 100% заряда следующий крит выпускает Ореольный выстрел, который рикошетит к 2ум ближайшим врагам (100% урона). Ореольные выстрелы могут нанести крит и дают 25% заряда.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Прицеливание: Крит<img src="https://i127.fastpic.org/big/2026/0306/55/41cb2588576f45b2e1c5cc21d708d155.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Thermal Lock — Тепловизор</h4><div class="effect">Прицеливание на врага 0.75 с: +100% урон проков на 5 с и +25% урон проков до смерти цели.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Прицеливание: Стихия<img src="https://i127.fastpic.org/big/2026/0308/31/9a83a437af94a41098bb17c4681c5831.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Core Splitter — Разделитель ядра</h4><div class="effect">В прицеле: попадание в Уязвимость врага с HP >75% применяет Core Splitter. Следующее попадание в Уязвимость в течение 5 с наносит 200% урона, цель получает +50% урона 3 с.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Прицеливание: Уязвимость<img src="https://i127.fastpic.org/big/2026/0306/49/ff8c56ec82427de8a09eca9d9dceec49.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Hollowpoint Rebound — Рикошет экспансивной пули</h4><div class="effect">Магазин ниже 50%: криты рикошетят (50% урона на 10 м). Если Рикошет критует, то цепочка повторяется.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Патроны: Крит<img src="https://i127.fastpic.org/big/2026/0310/16/0bbd80bd191f0fbb80779216d3c83816.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Prism Mag — Призматический магазин</h4><div class="effect">Каждая 5-я попавшая пуля применяет случайный стихийный дебафф и наносит +10% стихийного урона за каждый дебафф на цели.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Патроны: Стихия<img src="https://i127.fastpic.org/big/2026/0306/f5/d6e7be400f1102e1d86caa65aca376f5.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Fracture Chain — Цепь раскола</h4><div class="effect">Каждое 3-е попадание в Уязвимость помечает ближайших врагов (+25% урон по слабым местам). Попадания в слабые места помеченных возвращают 1 патрон. Длится 5 с.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Патроны: Уязвимость<img src="https://i127.fastpic.org/big/2026/0306/ef/f7c936b9ca932b032ab0feebeb46fbef.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Deadman's Frenzy — Безумие смертника</h4><div class="effect">Кончились патроны при стрельбе с бедра: +50% скорость стрельбы, +100% шанс крита, нет расхода патронов 4 с. Перезарядка сбрасывает. Обновляется через 8 с.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Навскидку: Крит<img src="https://wiki.tribesdepot.com/images/9/9f/Deadman%27s_Frenzy.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Cascade Field — Каскадное поле</h4><div class="effect">Убийства проком при стрельбе с бедра создают Каскадное поле: применяет случайный стихийный прок вблизи 1 раз/с в течение 3 с (кулдаун 3 с).</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Навскидку: Стихия<img src="https://wiki.tribesdepot.com/images/2/2c/Cascade_Field.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Bleed Glitch — Rhjdfdsq ukbnx</h4><div class="effect">Попадания в слабые места при стрельбе с бедра вызывают Кровотечение (50% урона за 4 с). Убийства от Кровотечения наносят 350 урона в 6 м сзади.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Навскидку: Уязвимость<img src="https://i127.fastpic.org/big/2026/0308/8b/dcb538d1e29539c00c698bd5d9c8a08b.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Remote Execution — Дистанционное исполнение</h4><div class="effect">Крит-убийства на расстоянии ≥10 м: ближайший враг получает Маяк прицеливания (гарантированные криты, +100% урон крита, 6 с).</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Дальний бой: Крит<img src="https://wiki.tribesdepot.com/images/f/fb/Remote_Execution2.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Conduction Arc — Проводящая дуга</h4><div class="effect">Стихийные проки на цели ≥10 м цепочатся на 8 м (50% урона, до 2 раз, кулдаун 2 с/цель).</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Дальний бой: Стихия<img src="https://wiki.tribesdepot.com/images/6/6a/Conduction_Arc.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Logic Override — Замещение логики</h4><div class="effect">Попадания в слабые места с ≥10 м оглушают цель на 2.5 с. При убийстве: эффект распространяется на 10 м на 1.5 с (кулдаун 5 с/цель).</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Дальний бой: Уязвимость<img src="https://i127.fastpic.org/big/2026/0306/77/ce178663db23e81ba777ccf6aeab4d77.png" class="wi4" alt=""></div></div></div>
+	  
+      <div class="synergy-card"><h4>Crimson Drive — Багровый стимулк</h4><div class="effect">Криты по целям в 10 м: +1% скорость движения и +2.5% скорость перезарядки. При 20 стаках: 800 урона в радиусе 12 м.</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Ближний бой: Крит<img src="https://i127.fastpic.org/big/2026/0306/76/7c3b51f73210bf0e2bdbe8c744030c76.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Crystalline Concentration — Кристальная концентрация</h4><div class="effect">Стихийные проки в 10 м создают Кристальные осколки. 3-й осколок → все летят к ближайшему врагу (200 урона, 30% шанс прока).</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Ближний бой: Стихия<img src="https://i127.fastpic.org/big/2026/0306/3f/b19942ba3b028d79085a65b42aa7c83f.png" class="wi4" alt=""></div></div></div>
+
+      <div class="synergy-card"><h4>Circuit Disruption — Цепное нарушение</h4><div class="effect">Попадания в слабые места в 10 м: 25% шанс оглушить цель (70% медленнее, не атакует, 2 с). Убийство такой цели: враги в 8 м получают +30% урона по слабым местам на 3 с (кулдаун 4 с/цель).</div><div class="synergy-req-block"><div class="req-block"><div class="req-title">Аугмент</div>Ближний бой: Уязвимость<h2 id="syn-perks1"></h2><img src="https://i127.fastpic.org/big/2026/0306/0c/2b648e3cf735b941201a48e5f1702f0c.png" class="wi4" alt=""></div></div></div>
+    </div>
+  </section>
+
+  <!-- СИНЕРГИИ: ПЕРКИ -->
+  <section id="syn-perks">
+    <div class="section-title"><span class="icon">🔗</span> Синергии: Перки</div>
+    <div class="syn-grid">
+      <div class="synergy-card"><h4>Dynamicism — Динамика</h4><div class="effect"><div class="req-block">+25% шанс уклонения при движении. Рывок улучшен: –10% кулдаун, снимает замедления, проходит сквозь врагов.<img src="https://i127.fastpic.org/big/2026/0306/7e/1d561d4a1b9872bf0df1b16587c3407e.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Chains of Darkness — Цепи тьмы</h4><div class="effect"><div class="req-block">Убийство врага с Пустотой: 20% шанс призвать Призрачные цепи, приковывающие всех ближних врагов.<img src="https://i127.fastpic.org/big/2026/0306/47/8d35b126242e734edf09769b69836547.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Consecutive Striker — Последовательный стрелок</h4><div class="effect"><div class="req-block">5 попаданий подряд: +25% урон 5 с, нет разброса/отдачи/расхода патронов 5 с (обновляется через 10 с).<img src="https://i127.fastpic.org/big/2026/0306/dc/c23e54efef0b32e55a99061f508214dc.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Dome Shield — Купольный щит</h4><div class="effect"><div class="req-block">При пробитии щита: разворачивается Купол, блокирующий все снаряды на 10 с (кулдаун 30 с).<img src="https://i127.fastpic.org/big/2026/0306/8f/0e852c6a8ee4dc7ed3ac4a534565a28f.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Blade Specter — Фантом с клинком</h4><div class="effect"><div class="req-block">Атаки ближнего боя: 35% шанс призвать Призрака, который атакует ближайшего врага.<img src="https://i127.fastpic.org/big/2026/0306/9e/00772f6896e286307d87e34e3255289e.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Elemental Ascendant — Стихийный вознесённый</h4><div class="effect"><div class="req-block">Прок: 35% шанс вызвать дополнительный случайный стихийный прок на цели.<img src="https://i127.fastpic.org/big/2026/0306/01/7dc73b1da14b6c4a54ad7c65cfea4601.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Engineer — Инженер</h4><div class="effect"><div class="req-block">Убийство врага: 25% шанс заспавнить Турель на трупе на 3 с.<img src="https://i127.fastpic.org/big/2026/0306/b9/96acf4d5dec25eae3b2a67a8240799b9.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Fireworks — Фейерверки</h4><div class="effect"><div class="req-block">Убийство: 10% шанс заспавнить 3 фейерверка, взрывающихся при контакте (25% урона гранаты).<img src="https://i127.fastpic.org/big/2026/0306/6a/37aa73e8a77b008ef378884338be746a.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Lightning Caller — Призыватель молний</h4><div class="effect"><div class="req-block">Каждые 8 с: Удар молнии по всем целям с Шоком в радиусе 15 м.<img src="https://i127.fastpic.org/big/2026/0306/3e/4c1d32ed827a063e1f20d0bb0494983e.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Ice Barrier — Ледяной барьер</h4><div class="effect"><div class="req-block">Убийство замороженного врага: +1 стак Ледяного барьера (–5% урон за стак). Теряет 1 стак за каждые 20 полученного урона.<img src="https://i127.fastpic.org/big/2026/0306/63/eaf8baf88dd575adb59fad71d2341b63.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Psionic Whips — Псионические плети</h4><div class="effect"><div class="req-block">Каждое 5-е оглушение активирует Псионические кнуты: 5 урона псионикой, отбрасывание в 5 м на 5 с.<img src="https://i127.fastpic.org/big/2026/0306/f1/c5e2707d57e30e779c1349485a18ddf1.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Reactive Defense — Реактивная защита</h4><div class="effect"><div class="req-block">При получении урона: +300 рейтинга брони на 10 с (стакается до 3 000).<img src="https://i127.fastpic.org/big/2026/0306/a5/941f6ebdfbcb1aa8d8f74a27bfc5a9a5.png" class="wi4" alt=""></div></div></div>
+      
+      <div class="synergy-card"><h4>Ring of Fire — Огненное кольцо</h4><div class="effect"><div class="req-block">Каждый 3-й прок Воспламенения или Поджога: волна пламени на 20 м, обновляющая все активные ДоТы.<img src="https://i127.fastpic.org/big/2026/0306/10/6eb797b9d863ecd9e1327a3bcc20d210.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Switch Hitter — Многосторонний</h4><div class="effect"><div class="req-block">Авто-смена оружия после каждого убийства. Убийство хотя бы одним оружием каждого слота: +50% урон на 8 с.<img src="https://i127.fastpic.org/big/2026/0306/74/1cb4e3c7b6450ba3429502c7b5de9c74.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Volatile Plasma — Летучая плазма</h4><div class="effect"><div class="req-block">Враги с Потоком наносят друг другу 75 урона плазмой каждую секунду, если находятся в радиусе 5 м.<img src="https://i127.fastpic.org/big/2026/0306/07/135924cf685c2ea7b28c91c798886907.png" class="wi4" alt=""></div></div></div>
+    <div class="synergy-card"><h4>Regeneration — Регенерация</h4><div class="effect"><div class="req-block">Ниже 35% HP: восстанавливает 40% HP за 3 с (кулдаун 1 минута).<img src="https://i127.fastpic.org/big/2026/0306/47/dd730a23b7291c090b63270a1eea8e47.png" class="wi4" alt=""></div></div></div>
+	<div class="synergy-card"><h4>Mantle of Decoy — Мантия распада</h4><div class="effect"><div class="req-block">Враги в радиусе 8 метров 1 раз получает 200 урона радиацией и замедляются на 50% на 1 секунду.<h4><h2 id="syn-items1"></h2><img src="https://i127.fastpic.org/big/2026/0306/b8/52057a1db8a72649289f3a3820e4e7b8.png" class="wi4" alt=""></div></div></div>
+	</div>
+  </section>
+
+  <!-- СИНЕРГИИ: ПРЕДМЕТЫ -->
+  <section id="syn-items">
+    <div class="section-title"><span class="icon">🔗</span> Синергии: Предметы</div>
+    <div class="syn-grid">
+      <div class="synergy-card"><h4>Barrel Chested — Грудь колесом</h4><div class="effect"><div class="req-block">Подбор бочки: +50% стихийного урона на 8 с.<img src="https://i127.fastpic.org/big/2026/0306/3b/df0ed6dbe73994a0f8b2204b78592d3b.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Color Coordinator — Координатор цветов</h4><div class="effect"><div class="req-block">Всё ваше оружие имеет шанс вызвать случайный стихийный прок (10% от шанса прока оружия).<img src="https://i127.fastpic.org/big/2026/0306/d3/f7df3c21f84cb572137253d9e3698ad3.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Soldier's Grit — Солдатская стойкость</h4><div class="effect"><div class="req-block">При падении ниже 15% HP на 2 с: иммунитет, нет расхода патронов, +50% урон.<img src="https://i127.fastpic.org/big/2026/0306/63/3283796aae92f09a74159765a9809663.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Fast Mover — Быстрый ход</h4><div class="effect"><div class="req-block">За каждую секунду бега: +10% урон (макс. 50%), +5% скорость (макс. 25%). Теряет 1 стак/с при остановке.<img src="https://i127.fastpic.org/big/2026/0306/a3/56c820179ee024045884274ff9ef08a3.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Handyman — Мастер на все руки</h4><div class="effect"><div class="req-block">Можно использовать гранату во время кулдауна за <img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap"> (чем дольше кулдаун, тем дороже).<img src="https://i127.fastpic.org/big/2026/0306/a1/2087b484e046f9e1d85a7f848902d9a1.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Jackpot — Джекпот</h4><div class="effect"><div class="req-block">За каждые 100 <img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap"> сверх 1000: +1% шанс Джекпота (тратит 100 <img src="https://wiki.tribesdepot.com/images/f/f7/T_IconCurrency_Scrap.png" class="wi" alt="Scrap">, +100% урон).<img src="https://i127.fastpic.org/big/2026/0306/d2/9c306dcdea33109fadde1ee7f2c320d2.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Party Time — Время праздновать</h4><div class="effect"><div class="req-block">5% шанс за убийство заспавнить Праздничный пак: +50% урон 8 с и выпадает предмет повышенной редкости.<img src="https://i127.fastpic.org/big/2026/0306/6d/7daa0399294690f99fd85bb43192786d.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Rail Gunner — Рельсостронщик</h4><div class="effect"><div class="req-block">Попадания в слабые места дают заряды (макс. 4). При перезарядке каждый заряд даёт +5% урона следующему попаданию в Уязвимость.<img src="https://i127.fastpic.org/big/2026/0306/62/544cdf0e8391ce26149a1e09e5acbc62.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Elemental Power — Стихийная сила</h4><div class="effect"><div class="req-block">За каждый вызванный прок: +5% урон проков (макс. 50%). Сбрасывается при достижении максимума.<img src="https://i127.fastpic.org/big/2026/0306/82/41a0c88bf5ed927470ab9a013e642e82.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Specialist — Специалист</h4><div class="effect"><div class="req-block">Каждое убийство: +1% постоянного урона по типу врага (макс. 30%). Типы: Ближний бой, Дальний бой, Летающий, Элитный.<h2 id="charm1"></h2><img src="https://i127.fastpic.org/big/2026/0306/02/239902945f375e908e1f5d3116fbfb02.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Spiny Membrane — Колючая мембрана</h4><div class="effect"><div class="req-block">Пока не в невидимости: 250 урона/с врагам в 3.5 м. Атакующие вас получают 300% урона и оглушаются.<img src="https://i127.fastpic.org/big/2026/0306/ae/5bb22b54f44d9d96fdbd1c58be3c68ae.png" class="wi4" alt=""></div></div></div>
+      <div class="synergy-card"><h4>Warlord — Военачальник</h4><div class="effect"><div class="req-block">Первое убийство в каждом столкновении: создаёт Боевую зону (10 м). Внутри: +35% урон, скорость стрельбы и перезарядки.<img src="https://i127.fastpic.org/big/2026/0306/a8/12df2e72a1cd2dae3fe13902160505a8.png" class="wi4" alt=""></div></div></div>
+    </div>
+  </section>
+
+  <!-- Благословление -->
+  <section id="charm">
+    <div class="section-title"><span class="icon">✨</span> Благословление</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Благословление — улучшение оружия через кузницу 4 зоны (станция Апофис). Для получения благославления первый раз требуется 100 <img src="https://wiki.tribesdepot.com/images/9/9b/T_IconCurrency_Tech.png" class="wi" alt="Tech"> и 3 <img src="https://i127.fastpic.org/big/2026/0302/72/909c4da43dbb77e192bee28d965fc572.png" class="wi" alt="Tech"> капсулы нанитов</p>
+<div class="card-grid">
+      <div class="item-card"><h4>SoulBound — Связь с душой</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/c9/aeca9a65afb442321f2aa711664940c9.png" class="wi22" alt=""> За каждые 25 убийств этим оружием: +2,5% Урон, Шанс проникающих и урон от проникающих попаданий</div></div>
+      <div class="item-card"><h4>Bladed — Лезвие</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/aa/8c331d8b8958326024f5225e96372eaa.png" class="wi22" alt=""> +50% урон и отсутствие рахода патрон на 4 секунды после убийства в ближнем бою.</div></div>
+      <div class="item-card"><h4>Respite Reload — Перезарядка на передышке</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/10/49e5a5422ce221238c81a5a045083310.png" class="wi22" alt=""> +90% снижения урона во время перезарядки.</div></div>
+      <div class="item-card"><h4>Rocket rounds — Ракетные снаряды</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/fd/6cd94a3637ce9449577bd62c3a7a0dfd.png" class="wi22" alt=""> Запустите умную ракету после израсходования 35% емкости вашего магазина.</div></div>
+      <div class="item-card"><h4>Spiteful — Злопамятный</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/83/f2a8a979d1c1def9231a303cd7372883.png" class="wi22" alt=""> +50% урона врагам, которые нанесли вам урон.</div></div>
+      <div class="item-card"><h4>Stealthy — Скрытный</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/de/dac28356ba6ae12dfa1aed868af5dade.png" class="wi22" alt=""> Убийство в слабое место накладывает невидимость на 1,5 секунды.</div></div>
+      <div class="item-card"><h4>Undeniable — Неоспоримый</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/57/baeaf254bb1f8f35ae3e725ecdacbc57.png" class="wi22" alt=""> Когда здоровье на 0, получаете неузвимость на 3 секунды. Убийство 3 врагов за это время восстановит 50% здоровья. Кулдаун 30 секунд.</div></div>
+      <div class="item-card"><h4>Bulwark — Щит</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/cc/c568e6e469025a2b6d50b14aaa4d28cc.png" class="wi22" alt=""> Убийство 3 врагов за 3 секунды дает неузвимость на следующий удар, полученный в течение 5 секунд. Кулдаун 10 секунд.</div></div>
+      <div class="item-card"><h4>Force Shield — Силовой щит </h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/f6/674e7fa6b0cb2ea7ccb4795559fa79f6.png" class="wi22" alt="">Получите щаит перед собой, которые выдерживает 3 удара. Кулдаун 20 секунд.</div></div>
+      <div class="item-card"><h4>Intelligent — Умный</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/4e/bda3b13762053c1357a8d6a882182e4e.png" class="wi22" alt=""> 25% шанс после перезарядки получить смарт пули до следующей перезардки.</div></div>
+      <div class="item-card"><h4>Breaker — Крушитель</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/79/0a8e2f049e51ca3cc73cf44756896979.png" class="wi22" alt=""> Первый удар оружием ошеломляет врага. Кулдаун 1,5 секунды.</div></div>
+      <div class="item-card"><h4>Draining — Истощение</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/60/f6406fe90546bfb17759089b93473c60.png" class="wi22" alt=""> Первое попадание по врагу восстановит 10% вашего здоровья. Кулдаун 5 секунд.</div></div>
+      <div class="item-card"><h4>Radiant — Сияющий</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/b4/d20684673588c9bcb5d1fd8638753cb4.png" class="wi22" alt=""> 35% вероятность при смерти врага создать вспышку света, ослепляющую врагов.</div></div>
+      <div class="item-card"><h4>Chrono-Trigger — Хронотриггер</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/76/eb09e65ee5cdbcb9f3d17e8b27f7f076.png" class="wi22" alt=""> 35% шанс при убийстве исказить и замедлить время в области трупа на 2 секунды.</div></div>
+      <div class="item-card"><h4>Death Pact — Смертельный договор</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/fe/934070b29fd509b84ed51c16b4f931fe.png" class="wi22" alt=""> При уровне здоровья 35% и ниже получите +40% урона и 10% вампиризма на 5 секунд. .</div></div>
+      <div class="item-card"><h4>Det-Mag — Дет-Маг</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/46/e7bb3b54fee5ee8b257808460599a746.png" class="wi22" alt=""> 2 секунды после перезарядки вызовит 6-метровый взрыв, наносящий 300% урона оружием.</div></div>
+      <div class="item-card"><h4>Executioner — Палач</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/69/76b1ffdf79144484d75872c7de0d5669.png" class="wi22" alt=""> +50% урона по врагам уровнем здоровья меньше 30%. Враги не боссы с уровнем здоровья меньше 10% убиваются мгновенно.</div></div>
+      <div class="item-card"><h4> Hunter — Охотник</h4><div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/d0/84cc38603d8b116c3bf6132b79fa03d0.png" class="wi22" alt="">Ставит метку на враге (синяя), повышая урон по отмеченной целе на 50%. После смерти цели ставит новую метку.</div></div>
+      <div class="item-card"> <h4> Stone Skin — Каменная кожа</h4> <div style="display:flex"><img src="https://i127.fastpic.org/big/2026/0303/43/b404dcc9463351627faca35ddf69bf43.png" class="wi22" alt="">При неподвижности: +35% урон и защиты от урона.</div></div>
+</div>
+  </section>
+
+  <div style="text-align:center;color:var(--muted);font-size:11px;margin-top:32px;padding-top:16px;border-top:1px solid var(--border);">
+    Deadzone: Rogue — Кодекс · v1.0.0.1 · Автор: Stinger (за основу взята информация от Автора Smyrill) · Перевод на русский<br>
+    Иконки стихий и валют: <a href="https://wiki.tribesdepot.com/wiki/Deadzone:_Rogue" style="color:var(--accent)" target="_blank">The Tribes Depot Wiki</a> (CC BY-SA 4.0)
+  </div>
+
+</div>
+</body>
+</html>
